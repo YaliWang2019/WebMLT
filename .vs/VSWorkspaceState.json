@@ -1,11 +1,12 @@
 {
   "ExpandedNodes": [
     "",
+    "\\mlt-backend",
     "\\mlt-frontend",
     "\\mlt-frontend\\public",
     "\\mlt-frontend\\src",
     "\\mlt-frontend\\src\\components"
   ],
-  "SelectedNode": "\\mlt-frontend\\src\\App.vue",
+  "SelectedNode": "\\mlt-backend\\server.py",
   "PreviewInSolutionExplorer": false
 }

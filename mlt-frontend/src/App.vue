@@ -13,7 +13,15 @@
                 } catch (e) {
                     console.log(e)
                 }
-            }
+            },
+            async scipy() {
+                try {
+                    let res = await axios.get("http://localhost:8888")
+                    alert(res.data.message)
+                } catch (e) {
+                    console.log(e)
+                }
+            },
         }
     }
 </script>
