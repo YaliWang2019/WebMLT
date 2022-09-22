@@ -8,16 +8,18 @@
         methods: {
             async trigger() {
                 try {
-                    let res = await axios.get("http://localhost:8888")
+                    let res = await axios.get("http://localhost:5000")
                     alert(res.data.message)
                 } catch (e) {
                     console.log(e)
                 }
             },
-            async scipy() {
+            async scipy(obj) {
                 try {
-                    let res = await axios.get("http://localhost:8888")
-                    alert(res.data.message)
+                    let res = await axios.post("http://localhost:5000", {
+                        "name": obj.target[0].value
+                    })
+                    alert(res.data.messages)
                 } catch (e) {
                     console.log(e)
                 }

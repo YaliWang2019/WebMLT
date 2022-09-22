@@ -23,7 +23,7 @@
             <h1 id="tools">SciPy</h1>
             <div class="box">
                 <button @click="trigger()">Click me!</button>
-                <form action="http://localhost:8888" method="GET" @submit.prevent="scipy()">
+                <form method="GET" @submit.prevent="scipy">
                     <div>
                         <label for="input">Please input your name.</label>
                         <input type="text" id="name" name="name" />

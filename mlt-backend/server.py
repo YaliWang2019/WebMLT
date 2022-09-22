@@ -1,42 +1,23 @@
 import sys
 import subprocess
-from scipy import print_Hello
+import json
 from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
 from urllib.request import Request
-from flask import Flask, render_template, request
-#app = Flask(__name__)
+from flask import Flask, request, make_response
+from flask_cors import CORS, cross_origin
 
-#@app.route('/', methods=['GET', 'POST'])
-#def form():
-#    return render_template('index.html')
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+@app.route('/', methods = ['POST', 'OPTIONS', 'GET'])
 
-#@app.route('/hello', methods=['GET', 'POST'])
-#def hello():
-#    return render_template('index.html', say=request.form['name'])
-
-HOST = "0.0.0.0"
-PORT = 8888
-
-items = {
-    "name": ""
-}
-
-class NeuralHTTP(BaseHTTPRequestHandler):    
-
-    def do_GET(self):
-        name = ""
-        self.send_response(200)
-        self.send_header("Content-type", "application/json")
-        self.end_headers()
-        self.wfile.write(("Hello," + name + "!").encode())
-
-#        output = subprocess.check_output([sys.executable, "scipy.py", name])
-#        return output
-    def end_headers (self):
-        self.send_header('Access-Control-Allow-Origin', '*')
-        SimpleHTTPRequestHandler.end_headers(self)
+def hello_world():
+    if request.method == 'POST':
+        name: str = request.json['name']
+        return make_response(json.dumps({"messages": "Hello, " + name + "!"}).encode(), 200)
+    if request.method == 'OPTIONS':
+        return make_response("{}", 204)
+    if request.method == 'GET':
+        return make_response(json.dumps({"messages": "Hello, World!"}).encode(), 200)
 
 if __name__ == "__main__":
-     httpd = HTTPServer((HOST, PORT), NeuralHTTP)
-     print("Server started at http://%s:%s" % (HOST, PORT))
-     httpd.serve_forever()
+    app.run(host='0.0.0.0', port = 5000)
