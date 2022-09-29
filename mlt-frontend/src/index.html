@@ -31,16 +31,17 @@
                     </div>
                 </form>
 
+            </div>
+
+            <div class="TextArea">
                 <form method="GET" @submit.prevent="chart">
                     <div>
                         <label for="input">Please input the x value.</label>
                         <input type="text" id="ID" name="x" />
                         <input type="submit" value="Submit" />
+                        <textarea :value ="textFieldValue" rows="10" cols="40" />
                     </div>
                 </form>
-
-                <textarea rows="10" cols="40" value = "chartData"></textarea>
-
             </div>
 
             <!--<div class="location" id="home">-->

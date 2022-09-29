@@ -3,6 +3,7 @@
 
 <script>
     import axios from "axios"
+//    import { defineComponent } from 'vue'
     export default {
         name: 'App',
         methods: {
@@ -27,19 +28,20 @@
                     console.log(e)
                 }
             },
-
-            async chart(obj) {
-                try {
-                    let res = await axios.post("http://localhost:5000", {
-                        "x": obj.target[0].value
-                    })
-                    alert(res.data)
-                } catch (e) {
-                    console.log(e)
+            data() {
+                return {
+                    textFieldValue: ''
                 }
             },
-        }
+            getName() {
+                axios.get("https://reqres.in/api/users/2").then(response => {
+                    this.textFieldValue = response.data.data.x
+                })
+            }
+        },
+        
     }
+  
 </script>
 
 <style src="./style.css"></style>
