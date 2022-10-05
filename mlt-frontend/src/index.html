@@ -21,27 +21,12 @@
         <!-- MAIN CONTAINER -->
         <section class="main-container">
             <h1 id="tools">SciPy</h1>
-            <div class="box">
-                <button @click="trigger()">Click me!</button>
-                <form method="GET" @submit.prevent="scipy">
-                    <div>
-                        <label for="input">Please input your name.</label>
-                        <input type="text" id="name" name="name" />
-                        <input type="submit" value="Submit" />
-                    </div>
-                </form>
-
-            </div>
 
             <div class="TextArea">
-                <form method="GET" @submit.prevent="chart">
-                    <div>
-                        <label for="input">Please input the x value.</label>
-                        <input type="text" id="ID" name="x" />
-                        <input type="submit" value="Submit" />
-                        <textarea :value ="textFieldValue" rows="10" cols="40" />
-                    </div>
-                </form>
+                <label for="input">Please input the x value.</label>
+                <input type="number" id="ID" :value="xValue" />
+                <button @click="scipy">Submit</button>
+                <textarea :value="textFieldValue" rows="10" cols="40" />
             </div>
 
             <!--<div class="location" id="home">-->
