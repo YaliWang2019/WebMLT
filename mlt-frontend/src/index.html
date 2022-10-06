@@ -23,23 +23,27 @@
             <h1 id="tools">SciPy</h1>
 
             <div class="TextArea">
-                <label for="input">Please input the x value.</label>
-                <input type="number" id="ID" :value="xValue" />
-                <button @click="scipy">Submit</button>
+                <label for="input">Please input the x1 value.</label>
+                <input type="number" id="ID1" v-model="x1Value" />
+                <!--<img src="data:image/png;base64, {{ plot_url }}">-->
+                <br />
+                <label for="input">Please input the x2 value.</label>
+                <input type="number" id="ID2" v-model="x2Value" />
+                <button onclick="submitForms()" @click ="scipy">Submit</button>
                 <textarea :value="textFieldValue" rows="10" cols="40" />
             </div>
 
             <!--<div class="location" id="home">-->
             <h1 id="tools">TensorFlow</h1>
             <div class="box">
-                
+
             </div>
             <!--</div>-->
 
 
             <h1 id="tools">PyTorch</h1>
             <div class="box">
-                
+
             </div>
         </section>
         <!-- END OF MAIN CONTAINER -->

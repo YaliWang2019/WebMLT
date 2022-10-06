@@ -23,8 +23,11 @@ def hello_world():
     if request.method == 'GET':
         return make_response(json.dumps({"messages": "Hello Get, World!"}).encode(), 200)
     if request.method == 'POST':
-        name: str = request.json['x']
-        return make_response(json.dumps(simple_chart(name)).encode(), 200)
+        x1Value: str = request.json['x1']
+        x2Value: str = request.json['x2']
+        x_sq, x_cu = simple_chart(x1Value, x2Value)
+        result = {"img.png"}     #'x_sq': float(x_sq), 'x_cu': float(x_cu)
+        return make_response(json.dumps(result).encode(), 200)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = 5000)
