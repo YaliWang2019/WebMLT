@@ -33,7 +33,7 @@
                 <button onclick="submitForms()" @click="scipy">Submit</button>
                 <br />
                 <textarea :value="textFieldValue" rows="10" cols="40" />
-                <img :src="`data:image/png;base64,${img_from_server}`" />
+                <img :ng-src="`data:image/png;base64,${img_from_server}`" />
             </div>
 
             <!--<div class="location" id="home">-->

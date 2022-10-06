@@ -8,13 +8,13 @@
         methods: {
             async scipy() {
                 try {
-                    let res = await axios.post("http://localhost:5000", this.img_from_server = res.chart,
+                    let res = await axios.post("http://localhost:5000", 
                     {
                         x1: this.x1Value,
                         x2: this.x2Value,
 
                     })
-                    alert(res.data.messages)
+                    this.img_from_server = res.chart;
                 } catch (e) {
                     console.log(e)
                 }
