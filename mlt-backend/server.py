@@ -8,6 +8,7 @@ from flask import Flask, request, make_response
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+app.debug = True
 CORS(app, resources={r"/*": {"origins": "*"}})
 @app.route('/', methods = ['POST', 'OPTIONS', 'GET'])
 
@@ -26,7 +27,7 @@ def hello_world():
         x1Value: str = request.json['x1']
         x2Value: str = request.json['x2']
         x_sq, x_cu = simple_chart(x1Value, x2Value)
-        result = {"img.png"}     #'x_sq': float(x_sq), 'x_cu': float(x_cu)
+        result = {"chart.png"}     #'x_sq': float(x_sq), 'x_cu': float(x_cu)
         return make_response(json.dumps(result).encode(), 200)
 
 if __name__ == "__main__":

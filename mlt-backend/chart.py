@@ -7,16 +7,16 @@ from flask import Flask, render_template
 from io import BytesIO
 import base64
 app = Flask(__name__)
+app.debug = True
 
-@app.route('/plot')
+@app.route('/index')
 def simple_chart(x1, x2):
-    img = BytesIO()
+    chart = BytesIO()
     x1_sq = np.square(x1)
     x2_cu = pow(x2, 3)
     plt.plot(x1_sq, x2_cu)
-    plt.savefig(img, format='png')
-    plt.close()
-    img.seek(0)
-    plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+    plt.savefig('chart.png')
+    chart.seek(0)
+    chart_png = base64.b64encode(plt.getvalue())
 
-    return img.png
+    return chart_png
