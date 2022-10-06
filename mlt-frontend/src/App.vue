@@ -8,12 +8,11 @@
         methods: {
             async scipy() {
                 try {
-                    let res = await axios.post("http://localhost:5000", {
-                        //The 'obj' object accepted by the function is a submission event, 
-                        //the 'target' refers to the form object that initiated this submission event.
-                        //It includes the array of the form that the user submitted
+                    let res = await axios.post("http://localhost:5000", this.img_from_server = res.chart,
+                    {
                         x1: this.x1Value,
                         x2: this.x2Value,
+
                     })
                     alert(res.data.messages)
                 } catch (e) {
@@ -23,8 +22,10 @@
         },
         data() {
             return {
+                img_from_server: "",
                 x1Value: 1,
                 x2Value: 1,
+                
             }
         },
         submitForms : function () {

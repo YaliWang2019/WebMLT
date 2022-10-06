@@ -15,8 +15,8 @@ def simple_chart(x1, x2):
     x1_sq = np.square(x1)
     x2_cu = pow(x2, 3)
     plt.plot(x1_sq, x2_cu)
-    plt.savefig(chart.png)
+    plt.savefig(chart, format = 'png')
     chart.seek(0)
     chart_png = base64.b64encode(chart.getvalue())
 
-    return chart_png
+    return str(chart_png, "utf-8")
