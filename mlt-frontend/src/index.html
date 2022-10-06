@@ -25,15 +25,15 @@
             <div class="TextArea">
                 <label for="input">Please input the x1 value.</label>
                 <input type="number" id="ID1" v-model="x1Value" />
-                <!--<img src="data:image/png;base64, {{ plot_url }}">-->
+
                 <br />
                 <label for="input">Please input the x2 value.</label>
                 <input type="number" id="ID2" v-model="x2Value" />
                 <br />
                 <button onclick="submitForms()" @click="scipy">Submit</button>
                 <br />
-                <textarea :value="textFieldValue" rows="10" cols="40" />
-                <img :ng-src="`data:image/png;base64,${img_from_server}`" />
+                
+                <img style="width:300px" :src="`data:image/png;base64,${img_from_server}`" />
             </div>
 
             <!--<div class="location" id="home">-->

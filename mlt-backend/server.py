@@ -21,8 +21,8 @@ def hello_world():
     if request.method == 'OPTIONS': 
         #204 status: success but no content
         return make_response("{}", 204) 
-    if request.method == 'GET':
-        return make_response(json.dumps({"messages": "Hello Get, World!"}).encode(), 200)
+    # request.method == 'GET':
+    #    return make_response(json.dumps({"messages": "Hello Get, World!"}).encode(), 200)
     if request.method == 'POST':
         x1Value: str = request.json['x1']
         x2Value: str = request.json['x2']

@@ -5,6 +5,10 @@
     import axios from "axios"
     export default {
         name: 'App',
+        submitForms: function () {
+            document.getElementById("ID1").submit();
+            document.getElementById("ID2").submit();
+        },
         methods: {
             async scipy() {
                 try {
@@ -14,7 +18,7 @@
                         x2: this.x2Value,
 
                     })
-                    this.img_from_server = res.chart;
+                    this.img_from_server = res.data.chart
                 } catch (e) {
                     console.log(e)
                 }
@@ -28,10 +32,6 @@
                 
             }
         },
-        submitForms : function () {
-            document.getElementById("ID1").submit();
-            document.getElementById("ID2").submit();
-        }
     }
   
 </script>
