@@ -14,6 +14,7 @@ app.debug = True
 CORS(app, resources={r"/*": {"origins": "*"}})
 @app.route('/', methods = ['POST', 'OPTIONS', 'GET'])
 
+
 def hello_world():
     #Use POST method to post the data body as json body
     #if request.method == 'POST':
@@ -25,7 +26,7 @@ def hello_world():
         return make_response("{}", 204) 
     # request.method == 'GET':
     #    return make_response(json.dumps({"messages": "Hello Get, World!"}).encode(), 200)
-    if request.method == 'POST':        
+    if request.method == 'POST':  
         x1Value: str = request.json['x1']
         x2Value: str = request.json['x2']
         
