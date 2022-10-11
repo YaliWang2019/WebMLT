@@ -6,8 +6,8 @@
     export default {
         name: 'App',
         submitForms: function () {
-            document.getElementById("ID1").submit();
-            document.getElementById("ID2").submit();
+            document.getElementById("ID1").value.submit();
+            document.getElementById("ID2").value.submit();
         },
         methods: {
             async scipy() {
@@ -27,8 +27,8 @@
         data() {
             return {
                 img_from_server: "",
-                x1Value: 1,
-                x2Value: 1,
+                x1Value: [],
+                x2Value: [],
                 
             }
         },

@@ -4,9 +4,8 @@
     "\\mlt-backend",
     "\\mlt-frontend",
     "\\mlt-frontend\\public",
-    "\\mlt-frontend\\src",
-    "\\mlt-frontend\\src\\components"
+    "\\mlt-frontend\\src"
   ],
-  "SelectedNode": "\\mlt-backend\\chart.py",
+  "SelectedNode": "\\mlt-frontend\\package.json",
   "PreviewInSolutionExplorer": false
 }

@@ -13,8 +13,8 @@ app.debug = True
 def simple_chart(x1, x2):
     chart = BytesIO()
     x1_sq = np.square(x1)
-    x2_cu = pow(x2, 3)
-    plt.plot(x1_sq, x2_cu)
+    x2_cu = np.power(x2, 3)
+    plt.plot(x1_sq, x2_cu, marker = 'o')
     plt.savefig(chart, format = 'png')
     chart.seek(0)
     chart_png = base64.b64encode(chart.getvalue())

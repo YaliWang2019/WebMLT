@@ -1,6 +1,8 @@
+from ctypes import Array
 import sys
 import subprocess
 import json
+import numpy as np
 from chart import simple_chart
 from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
 from urllib.request import Request
@@ -24,9 +26,13 @@ def hello_world():
     # request.method == 'GET':
     #    return make_response(json.dumps({"messages": "Hello Get, World!"}).encode(), 200)
     if request.method == 'POST':
+        x1Array = x1Value.split(" ")
+        x2Array = x2Value.split(" ")
+        
         x1Value: str = request.json['x1']
         x2Value: str = request.json['x2']
-        chart = simple_chart(x1Value, x2Value)
+        
+        chart = simple_chart(x1Array, x2Array)
         result = {"chart": chart}     #'x_sq': float(x_sq), 'x_cu': float(x_cu)
         return make_response(json.dumps(result).encode(), 200)
 
