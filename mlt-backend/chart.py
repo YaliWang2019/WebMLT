@@ -16,6 +16,8 @@ def simple_chart(x1, x2):
     x1_sq = np.square(x1)
     x2_cu = np.power(x2, 3)
     plt.cla();
+    plt.xlabel('x1 square')
+    plt.ylabel('x2 cube')
     plt.plot(x1_sq, x2_cu, marker = 'o')
     plt.savefig(chart, format = 'png')
     chart.seek(0)
