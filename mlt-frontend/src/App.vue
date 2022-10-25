@@ -2,9 +2,30 @@
 </template>
 
 <script>
+    import { defineComponent } from 'vue'
     import axios from "axios"
-    export default {
+    export default defineComponent({
         name: 'App',
+        methods: {
+            async submit(event) {
+                console.log(event.target[0].files[0])
+                const formData = new FormData()
+                formData.append('file', event.target[0].files[0])
+                try {
+                    const response = await axios.post('http://localhost:5000', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    console.log(response)
+                    alert(response.data.message)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+        }
+    })
+        /*
         submitForms: function () {
             document.getElementById("ID1").value.submit();
             document.getElementById("ID2").value.submit();
@@ -47,7 +68,7 @@
                 
             }
         },
-    }
+    }*/
   
 </script>
 

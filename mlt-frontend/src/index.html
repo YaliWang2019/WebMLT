@@ -22,21 +22,28 @@
         <section class="main-container">
             <h1 id="tools">SciPy</h1>
 
-            <div class="TextArea">
-                <label for="input">Please input the x1 value.</label>
-                <input type="text" id="ID1" v-model="x1Value" />
+            <!--<div class="TextArea">
+            <label for="input">Please input the x1 value.</label>
+            <input type="text" id="ID1" v-model="x1Value" />
 
-                <br />
-                <label for="input">Please input the x2 value.</label>
-                <input type="text" id="ID2" v-model="x2Value" />
-                <br />
-                <button onclick="submitForms()" @click="scipy">Submit</button>
-                <br />
-                
-                <img style="width:400px" :src="`data:image/png;base64,${img_from_server}`" v-if="img_from_server !== ''" />
-            </div>
+            <br />
+            <label for="input">Please input the x2 value.</label>
+            <input type="text" id="ID2" v-model="x2Value" />
+            <br />
+            <button onclick="submitForms()" @click="scipy">Submit</button>
+            <br />
 
+            <img style="width:400px" :src="`data:image/png;base64,${img_from_server}`" v-if="img_from_server !== ''" />
+            </div>-->
             <!--<div class="location" id="home">-->
+
+            <div>
+                <em>Please upload a csv file.</em>
+                <form @submit.prevent="submit">
+                    <input type="file" name="file" />
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
             <h1 id="tools">TensorFlow</h1>
             <div class="box">
 
