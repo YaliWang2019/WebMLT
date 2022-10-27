@@ -17,10 +17,10 @@
                             'Content-Type': 'multipart/form-data'
                         }
                     })
-                    this.img_scatter = response.data.chart
-                    this.img_train = response.data.chart
-                    this.img_test = response.data.chart
-                    this.img_prediction = response.data.chart
+                    this.img_scatter = response.data.charts
+                    this.img_train = response.data.charts
+                    this.img_test = response.data.charts
+                    this.img_prediction = response.data.charts
                     console.log(response)
                 } catch (e) {
                     console.log(e)
@@ -33,6 +33,7 @@
                 img_train: "",
                 img_test: "",
                 img_prediction: "",
+                file: "",
             }
         },
     })

@@ -40,9 +40,9 @@ def hello_world():
     # Detect file content type
         if request.files['file'].content_type != 'text/csv':
             return make_response(jsonify({'message': 'File must be a CSV'}))
-        df = pd.read_csv(request.files.get('file'), names = ["column1", "column2", "column3"])
-        chart = linearregression_chart()
-        result = {"chart": chart}     #'x_sq': float(x_sq), 'x_cu': float(x_cu)
+        df = pd.read_csv(request.files.get('file'))
+        charts = linearregression_chart(df)
+        result = {"charts": charts}     #'x_sq': float(x_sq), 'x_cu': float(x_cu)
         return make_response(json.dumps(result).encode(), 200)
 
 if __name__ == "__main__":
