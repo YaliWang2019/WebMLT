@@ -17,13 +17,24 @@
                             'Content-Type': 'multipart/form-data'
                         }
                     })
+                    this.img_scatter = res.data.chart
+                    this.img_train = res.data.chart
+                    this.img_test = res.data.chart
+                    this.img_prediction = res.data.chart
                     console.log(response)
-                    alert(response.data.message)
-                } catch (err) {
-                    console.log(err)
+                } catch (e) {
+                    console.log(e)
                 }
             }
-        }
+        },
+        data() {
+            return {
+                img_scatter: "",
+                img_train: "",
+                img_test: "",
+                img_prediction: "",
+            }
+        },
     })
         /*
         submitForms: function () {
