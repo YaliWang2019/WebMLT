@@ -60,30 +60,28 @@ Y = (Y - np.mean(Y)) / np.std(Y)
 # Visualize the full Dataset
 # img_scatter
 img_scatter = plt.scatter(X, Y)
-img_scatter.linearregression_chart()
+
 
 # Split the Dataset into Training and Test Set
 from matplotlib.pyplot import figure
 X_train_split, X_test_split, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
 
 figure(figsize=(18, 6), dpi=80)
-img_train = BytesIO()
+
 plt.subplot(1, 2, 1) # row 1, col 2 index 1
-plt.scatter(X_train_split, Y_train)
+img_train = plt.scatter(X_train_split, Y_train)
 plt.title("Training Data")
 plt.xlabel('X_train')
 plt.ylabel('Y_train')
-plt.savefig(img_train, format = 'png')
 
-img_test = BytesIO()
 plt.subplot(1, 2, 2) # index 2
-plt.scatter(X_test_split, Y_test)
+img_test = plt.scatter(X_test_split, Y_test)
 plt.title("Test Data")
 plt.xlabel('X_test')
 plt.ylabel('Y_test')
 
 plt.tight_layout()
-plt.savefig(img_test, format = 'png')
+
 # Create a 2D array for training and test data to make it compatible with
 # scikit-learn (This is specific to scikit-learn because of the way it accepts input data)
 X_train = X_train_split.reshape(-1, 1)
@@ -103,12 +101,10 @@ Y_pred = regressor.predict(X_test)
 # Plot the predictions and the original test data
 X_test_split.shape, Y_pred.shape, Y_test.shape
 
-img_prediction = BytesIO()
 plt.clf()
-plt.plot(X_test_split, Y_test, 'go', label='True data', alpha=0.5)
-plt.plot(X_test_split, Y_pred, '--', label='Predictions', alpha=0.5)
+img_prediction = plt.plot(X_test_split, Y_test, 'go', label='True data', alpha=0.5)
+img_prediction = plt.plot(X_test_split, Y_pred, '--', label='Predictions', alpha=0.5)
 plt.legend(loc='best')
-plt.savefig(img_prediction, format = 'png')
 
 # Evaluate the quality of the training (Generate Evaluation Metrics)
 from sklearn import metrics
