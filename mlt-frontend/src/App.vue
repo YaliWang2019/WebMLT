@@ -17,10 +17,10 @@
                             'Content-Type': 'multipart/form-data'
                         }
                     })
-                    this.img_scatter = res.data.chart
-                    this.img_train = res.data.chart
-                    this.img_test = res.data.chart
-                    this.img_prediction = res.data.chart
+                    this.img_scatter = response.data.chart
+                    this.img_train = response.data.chart
+                    this.img_test = response.data.chart
+                    this.img_prediction = response.data.chart
                     console.log(response)
                 } catch (e) {
                     console.log(e)

@@ -3,7 +3,8 @@ import sys
 import subprocess
 import json
 import numpy as np
-from chart import simple_chart
+import pandas as pd
+from chart import linearregression_chart
 from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
 from urllib.request import Request
 from flask import Flask, request, make_response, jsonify
@@ -36,11 +37,11 @@ def hello_world():
     #    return make_response(json.dumps(result).encode(), 200)
 
     if request.method == 'POST':
-        # Detect file content type
+    # Detect file content type
         if request.files['file'].content_type != 'text/csv':
             return make_response(jsonify({'message': 'File must be a CSV'}))
-    content: str = request.files['file'].read().decode('utf-8')
-    print(content)
+    df = pd.read_csv(request.files.get('file'), names = ["column1", "column2", "column3"])
+    print(df)
     return make_response(jsonify({'message': 'Correct CSV file'}), 200)
 
 if __name__ == "__main__":
