@@ -18,10 +18,8 @@
                         }
                     })
                     
-                    this.img_scatter = response.data.charts
-                    this.img_train = response.data.charts
-                    this.img_test = response.data.charts
-                    this.img_prediction = response.data.charts
+                    
+                    this.img_from_server = response.data.charts
                     
                 } catch (e) {
                     console.log(e)
@@ -34,6 +32,8 @@
                 img_train: "",
                 img_test: "",
                 img_prediction: "",
+                img_from_server: "",
+                charts: "",
                 file: "",
             }
         },

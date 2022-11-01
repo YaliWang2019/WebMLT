@@ -81,6 +81,8 @@ def linearregression_chart(df):
   plt.clf()
   img_prediction = plt.plot(X_test_split, Y_test, 'go', label='True data', alpha=0.5)
   img_prediction = plt.plot(X_test_split, Y_pred, '--', label='Predictions', alpha=0.5)
+  plt.title("Prediction")
+  
   plt.legend(loc='best')
 
   # Evaluate the quality of the training (Generate Evaluation Metrics)
@@ -99,7 +101,6 @@ def linearregression_chart(df):
     output_chart = base64.b64encode(item.getvalue())
     chartset = np.append(chartset, output_chart)
 
-
   return str(chartset, "utf-8")
 
 
@@ -107,8 +108,3 @@ def generate_dataset():
   X = np.linspace(0, 2, 100)
   Y = 1.5 * X + np.random.randn(*X.shape) * 0.2 + 0.5
   return X, Y
-
-
-
-
-
