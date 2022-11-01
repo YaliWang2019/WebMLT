@@ -20,8 +20,10 @@ app.debug = True
 
 @app.route('/index')
 @app.route('/linearregression_chart',methods=['GET'])
+
 def linearregression_chart(df):
-  charts = np.array([])
+  
+  chartset = np.array([])
   origin_charts = []
   X = df.atemp.to_numpy()
   Y = df.cnt.to_numpy()
@@ -78,27 +80,22 @@ def linearregression_chart(df):
   print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(Y_test, Y_pred)))
 
   origin_charts.append(img_scatter)
-  origin_charts.append(img_train)
-  origin_charts.append(img_test)
-  origin_charts.append(img_prediction)
-  for i in origin_charts:
-    chart = BytesIO()
-    plt.cla()
-    plt.savefig(chart, format = 'png')
-    chart.seek(0)
-    chart_png = base64.b64encode(chart.getvalue())
-    charts = np.append(charts, chart_png)
-    return str(charts, "utf-8")
+  
+  img_scatter_out = BytesIO()
+  plt.cla()
+  plt.savefig(img_scatter_out, format = 'png')
+  img_scatter_out.seek(0)
+  chart_png = base64.b64encode(img_scatter_out.getvalue())
+  chartset = np.append(img_scatter, chart_png)
+  return str(chart_png, "utf-8")
 
-DATASET_TYPE = "downloaded" # Options are "toy" or "downloaded"
 
 def generate_dataset():
   X = np.linspace(0, 2, 100)
   Y = 1.5 * X + np.random.randn(*X.shape) * 0.2 + 0.5
   return X, Y
 
-if DATASET_TYPE == "toy":
-  X, Y = generate_dataset()
+
 
 
 

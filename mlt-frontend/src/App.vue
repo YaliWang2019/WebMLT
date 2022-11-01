@@ -17,11 +17,12 @@
                             'Content-Type': 'multipart/form-data'
                         }
                     })
+                    console.log(response)
                     this.img_scatter = response.data.charts
                     this.img_train = response.data.charts
                     this.img_test = response.data.charts
                     this.img_prediction = response.data.charts
-                    console.log(response)
+                    
                 } catch (e) {
                     console.log(e)
                 }
