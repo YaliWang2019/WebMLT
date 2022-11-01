@@ -17,7 +17,7 @@
                             'Content-Type': 'multipart/form-data'
                         }
                     })
-                    console.log(response)
+                    
                     this.img_scatter = response.data.charts
                     this.img_train = response.data.charts
                     this.img_test = response.data.charts

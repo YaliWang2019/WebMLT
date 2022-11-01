@@ -44,7 +44,9 @@
                     <button type="submit">Submit</button>
                 </form>
                 <img style="width:400px" :src="`data:image/png;base64,${img_scatter}`" v-if="img_scatter !== ''" />
-                
+                <img style="width:400px" :src="`data:image/png;base64,${img_train}`" v-if="img_train !== ''" />
+                <img style="width:400px" :src="`data:image/png;base64,${img_test}`" v-if="img_test !== ''" />
+                <img style="width:400px" :src="`data:image/png;base64,${img_prediction}`" v-if="img_prediction !== ''" />
             </div>
             <h1 id="tools">TensorFlow</h1>
             <div class="box">
