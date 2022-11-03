@@ -23,7 +23,6 @@ app.debug = True
 
 def linearregression_chart(df):
   
-  chartset = np.array([])
   origin_charts = []
   X = df.atemp.to_numpy()
   Y = df.cnt.to_numpy()
@@ -32,9 +31,9 @@ def linearregression_chart(df):
   # Visualize the full Dataset
   # img_scatter
   Y = (Y - np.mean(Y)) / np.std(Y)
-  plt.clf()
 
-  img_scatter = plt.scatter(X, Y)
+  plt.scatter(X, Y)
+  origin_charts.append(img_to_base64(plt))
   plt.title("Visualize the full Dataset")
   plt.xlabel('X')
   plt.ylabel('Y')
@@ -44,15 +43,15 @@ def linearregression_chart(df):
   # Split the Dataset into Training and Test Set
   X_train_split, X_test_split, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
   plt.subplot(1, 2, 1) # row 1, col 2 index 1
-  plt.clf()
-  img_train = plt.scatter(X_train_split, Y_train)
+  plt.scatter(X_train_split, Y_train)
+  origin_charts.append(img_to_base64(plt))
   plt.title("Training Data")
   plt.xlabel('X_train')
   plt.ylabel('Y_train')
 
   plt.subplot(1, 2, 2) # index 2
-  plt.clf()
-  img_test = plt.scatter(X_test_split, Y_test)
+  plt.scatter(X_test_split, Y_test)
+  origin_charts.append(img_to_base64(plt))
   plt.title("Test Data")
   plt.xlabel('X_test')
   plt.ylabel('Y_test')
@@ -78,9 +77,9 @@ def linearregression_chart(df):
   # Plot the predictions and the original test data
   X_test_split.shape, Y_pred.shape, Y_test.shape
 
-  plt.clf()
-  img_prediction = plt.plot(X_test_split, Y_test, 'go', label='True data', alpha=0.5)
-  img_prediction = plt.plot(X_test_split, Y_pred, '--', label='Predictions', alpha=0.5)
+  plt.plot(X_test_split, Y_test, 'go', label='True data', alpha=0.5)
+  plt.plot(X_test_split, Y_pred, '--', label='Predictions', alpha=0.5)
+  origin_charts.append(img_to_base64(plt))
   plt.title("Prediction")
   
   plt.legend(loc='best')
@@ -90,21 +89,20 @@ def linearregression_chart(df):
   # print('Mean Squared Error:', metrics.mean_squared_error(Y_test, Y_pred))
   # print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(Y_test, Y_pred)))
 
-  origin_charts.append(img_scatter)
-  origin_charts.append(img_train)
-  origin_charts.append(img_test)
-  origin_charts.append(img_prediction)
-  for item in origin_charts:
-    item = BytesIO()
-    plt.savefig(item, format = 'png')
-    item.seek(0)
-    output_chart = base64.b64encode(item.getvalue())
-    chartset = np.append(chartset, output_chart)
-
-  return str(chartset, "utf-8")
+  return origin_charts
 
 
 def generate_dataset():
   X = np.linspace(0, 2, 100)
   Y = 1.5 * X + np.random.randn(*X.shape) * 0.2 + 0.5
   return X, Y
+
+
+
+def img_to_base64(plt):
+  chart = BytesIO()
+  plt.savefig(chart, format = 'png')
+  chart.seek(0)
+  output_chart = base64.b64encode(chart.getvalue())
+  return str(output_chart, 'utf-8')
+
