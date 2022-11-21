@@ -1,30 +1,88 @@
-<template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+<template src="./index.html">
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+    import { defineComponent } from 'vue'
+    import axios from "axios"
+    export default defineComponent({
+        name: 'App',
+        methods: {
+            async submit(event) {
+                console.log(event.target[0].files[0])
+                const formData = new FormData()
+                formData.append('file', event.target[0].files[0])
+                try {
+                    const response = await axios.post('http://localhost:5000', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                    
+                    
+                    this.img_from_server = response.data.charts
+                    
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+        },
+        data() {
+            return {
+                img_scatter: "",
+                img_train: "",
+                img_test: "",
+                img_prediction: "",
+                img_from_server: "",
+                charts: "",
+                file: "",
+            }
+        },
+    })
+        /*
+        submitForms: function () {
+            document.getElementById("ID1").value.submit();
+            document.getElementById("ID2").value.submit();
+        },
+        methods: {
+            async scipy() {
+                try {
+                    let x1ValueString = this.x1Value
+                    let x2ValueString = this.x2Value
+                    let x1Values = x1ValueString.split(" ")
+                    let x2Values = x2ValueString.split(" ")
 
-nav {
-  padding: 30px;
-}
+                    for (let i in x1Values) {
+                        let result = parseFloat(x1Values[i])
+                        if (!isNaN(result)) x1Values[i] = result
+                        else return alert("x1 is not a vaild number sequence")
+                    }
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+                    for (let i in x2Values) {
+                        let result = parseFloat(x2Values[i])
+                        if (!isNaN(result)) x2Values[i] = result
+                        else return alert("x2 is not a vaild number sequence")
+                    }
+                    let res = await axios.post("http://localhost:5000", {
+                        x1: x1Values,
+                        x2: x2Values,
 
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+                    })
+                    this.img_from_server = res.data.chart
+                } catch (e) {
+                    console.log(e)
+                }
+            },
+        },
+        data() {
+            return {
+                img_from_server: "",
+                x1Value: [],
+                x2Value: [],
+                
+            }
+        },
+    }*/
+  
+</script>
+
+<style src="./style.css"></style>
