@@ -76,7 +76,7 @@ def linearregression_chart(df):
 
   # Plot the predictions and the original test data
   X_test_split.shape, Y_pred.shape, Y_test.shape
-
+  plt.clf()
   plt.plot(X_test_split, Y_test, 'go', label='True data', alpha=0.5)
   plt.plot(X_test_split, Y_pred, '--', label='Predictions', alpha=0.5)
   origin_charts.append(img_to_base64(plt))
@@ -106,3 +106,5 @@ def img_to_base64(plt):
   output_chart = base64.b64encode(chart.getvalue())
   return str(output_chart, 'utf-8')
 
+
+print("Hello world")

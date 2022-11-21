@@ -19,9 +19,9 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 def hello_world():
     #Use POST method to post the data body as json body
-    #if request.method == 'POST':
-    #    name: str = request.json['name']
-    #    return make_response(json.dumps({"messages": "Hello Post, " + name + "!"}).encode(), 200)
+    if request.method == 'POST':
+        name: str = request.json['name']
+        return make_response(json.dumps({"messages": "Hello Post, " + name + "!"}).encode(), 200)
     #Preflight request to exam if the current request
     #if request.method == 'OPTIONS': 
         #204 status: success but no content
@@ -35,7 +35,7 @@ def hello_world():
     #    chart = simple_chart(x1Value, x2Value)
     #    result = {"chart": chart}     #'x_sq': float(x_sq), 'x_cu': float(x_cu)
     #    return make_response(json.dumps(result).encode(), 200)
-
+    """
     if request.method == 'POST':
     # Detect file content type
         if request.files['file'].content_type != 'text/csv':
@@ -46,6 +46,7 @@ def hello_world():
         
         result = {"charts": charts} 
         return make_response(json.dumps(result).encode(), 200)
+        """
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = 5000)
