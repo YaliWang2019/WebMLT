@@ -16,13 +16,14 @@ app.debug = True
 CORS(app, resources={r"/*": {"origins": "*"}})
 @app.route('/files',methods=['POST'])
 def getUploadedFile():
-    getFile = fileUpload(request.files.get('file'))
-    return (json.dumps(json.loads(getFile), indent=4))
+    (data, res) = fileUpload(request.files)
+    return make_response(data, res)
+
 
 @app.route('/missingValues',methods=['GET'])
-def removeMissingValues(df):
-    rmResult = rmMissingvalues(df)
-    return (json.dumps(json.loads(rmResult), indent=4))
+def removeMissingValues():
+    rmResult = rmMissingvalues(request.args.get('id'))
+    return make_response(rmResult)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = 5000)

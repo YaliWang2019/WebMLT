@@ -17,22 +17,30 @@ from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHan
 from urllib.request import Request
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
-app = Flask(__name__)
+from uuid import uuid4
 
+csv_file = {}
 # Phase (1). data collection (file upload):
-def fileUpload(file):
-  if request.method == 'POST':
-    # Detect file content type
-        if request.files['file'].content_type != 'text/csv':
-            return make_response(json.dumps({'message': 'File must be a CSV'}))
-        df = pd.read_csv(request.files.get('file'))
-        #print(df)
-        return make_response(json.dumps({'message': 'CSV file uploaded successfully!'}), 200)
+def fileUpload(files):
+  #  if request.method == 'POST':
+  if files['file'].content_type != 'text/csv':
+    return (json.dumps({'message': 'File must be a CSV'}), 400)
+  
+  df = pd.read_csv(files.get('file'))
+
+  uuid = str(uuid4())
+
+  csv_file[uuid] = df
+  #print(df)
+  return (json.dumps({'id': uuid}), 200)
 
 # Phase (2). data preprocessing (removing missing values and scaling, return processed dataframe preview): 
-def rmMissingvalues(df):
+def rmMissingvalues(id):
+  df = csv_file[id]
   df_new = df.dropna()
-  return df_new.shape
+  df_preview = df_new[0:5]
+  return ((df_preview.to_json()), 200)
+
 
 def scaling(df):
   origin_charts = []
@@ -118,6 +126,3 @@ def img_to_base64(plt):
   output_chart = base64.b64encode(chart.getvalue())
   return str(output_chart, 'utf-8')
 
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port = 5000)
