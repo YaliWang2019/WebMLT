@@ -4,7 +4,7 @@ import subprocess
 import json
 import numpy as np
 import pandas as pd
-from linear_regression_chart import linearregression_chart
+# from linear_regression_chart import linearregression_chart
 from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
 from urllib.request import Request
 from flask import Flask, request, make_response, jsonify
@@ -15,8 +15,11 @@ app = Flask(__name__)
 app.debug = True
 CORS(app, resources={r"/*": {"origins": "*"}})
 #@app.route('/', methods = ['POST', 'OPTIONS', 'GET'])
-@app.route("/", methods = ['POST', 'GET'])
-
+#@app.route("/", methods = ['POST', 'GET'])
+@app.route("/home", methods = ['GET'])
+def hello_world():
+    return make_response(json.dumps({"messages": "This is feedback from /home endpoint."}).encode(), 200)
+"""
 def hello_world():
     #Use POST method to post the data body as json body
     if request.method == 'POST':
@@ -35,7 +38,6 @@ def hello_world():
     #    chart = simple_chart(x1Value, x2Value)
     #    result = {"chart": chart}     #'x_sq': float(x_sq), 'x_cu': float(x_cu)
     #    return make_response(json.dumps(result).encode(), 200)
-    """
     if request.method == 'POST':
     # Detect file content type
         if request.files['file'].content_type != 'text/csv':

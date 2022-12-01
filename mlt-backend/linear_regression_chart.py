@@ -1,6 +1,4 @@
-import os
-import requests
-import zipfile
+import json
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -8,19 +6,34 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from tabulate import tabulate
 import numpy as np
-from flask import Flask, render_template
+from flask import Flask, render_template, request, make_response, jsonify
 from io import BytesIO
 import base64
 from sklearn.model_selection import train_test_split
 from matplotlib.pyplot import figure
 from sklearn.linear_model import SGDRegressor
 from sklearn import metrics
+from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
+from urllib.request import Request
+from flask_cors import CORS, cross_origin
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
-app.debug = True
 
-@app.route('/index')
 @app.route('/linearregression_chart',methods=['GET'])
 
+# Phase (1). data collection (file upload):
+def fileUpload():
+  if request.method == 'POST':
+    # Detect file content type
+        if request.files['file'].content_type != 'text/csv':
+            return make_response(json.dumps({'message': 'File must be a CSV'}))
+        df = pd.read_csv(request.files.get('file'))
+        #print(df)
+        return make_response(json.dumps({'message': 'CSV file uploaded successfully!'}), 200)
+
+fileUpload(request.files['file'])
+
+# Phase (2). data preprocessing (removing missing values and scaling, return processed dataframe preview): 
 def linearregression_chart(df):
   
   origin_charts = []
@@ -107,4 +120,5 @@ def img_to_base64(plt):
   return str(output_chart, 'utf-8')
 
 
-print("Hello world")
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port = 5000)
