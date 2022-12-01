@@ -53,6 +53,8 @@ def scaling(id):
   Y = (Y - np.mean(Y)) / np.std(Y)
   return (X, Y)
 
+# Phase 3: data visualization (whole data visualization, training data visualization, and testing data visualization, return charts)
+
 def scatterImg(id):
   (X, Y) = scaling(id)
   plt.scatter(X, Y)
@@ -88,6 +90,7 @@ def train_test_imgs(id, test_size, random_state):
 
   return (json.dumps({'imgTrain': trainImg, 'imgTest': testImg}), 200)
 
+# Phase 4: model training
 # proving X_train, X_test, regressor, and Y_pred
 def pre_train(id, test_size, random_state):
   (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, float(test_size), int(random_state))
@@ -123,6 +126,7 @@ def modelTraining(id, test_size, random_state):
 
   return (json.dumps({'imgPrediction':img_to_base64(plt)}), 200)
 
+# Phase 5: accuracy
 def accuracy(id, test_size, random_state):
   (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
   meanAbErr = str(metrics.mean_absolute_error(Y_test, Y_pred))
@@ -150,8 +154,9 @@ def confusionMatrix(cm, classes, normalize=False, title='Confusion matrix', cmap
   plt.tight_layout()
   plt.ylabel('True label')
   plt.xlabel('Predicted label')
+  return (img_to_base64(plt))
 
-def makeConfusionMatrix(test_size, random_state):
+def makeConfusionMatrix(id, test_size, random_state):
   (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
   cm = confusion_matrix(Y_test, Y_pred)
   labels = ["+", "-"]

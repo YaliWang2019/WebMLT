@@ -47,7 +47,7 @@ def calculations():
 
 @app.route('/matrix', methods = ['GET'])
 def getMatrix():
-    confMatrixImg = makeConfusionMatrix(request.args.get('test_size'), request.args.get('random_state'))
+    confMatrixImg = makeConfusionMatrix(request.args.get('id'), request.args.get('test_size'), request.args.get('random_state'))
     return make_response(confMatrixImg)
 
 if __name__ == "__main__":
