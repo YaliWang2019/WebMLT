@@ -19,10 +19,8 @@ from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
-@app.route('/linearregression_chart',methods=['GET'])
-
 # Phase (1). data collection (file upload):
-def fileUpload():
+def fileUpload(file):
   if request.method == 'POST':
     # Detect file content type
         if request.files['file'].content_type != 'text/csv':
@@ -31,11 +29,12 @@ def fileUpload():
         #print(df)
         return make_response(json.dumps({'message': 'CSV file uploaded successfully!'}), 200)
 
-fileUpload(request.files['file'])
-
 # Phase (2). data preprocessing (removing missing values and scaling, return processed dataframe preview): 
-def linearregression_chart(df):
-  
+def rmMissingvalues(df):
+  df_new = df.dropna()
+  return df_new.shape
+
+def scaling(df):
   origin_charts = []
   X = df.atemp.to_numpy()
   Y = df.cnt.to_numpy()
