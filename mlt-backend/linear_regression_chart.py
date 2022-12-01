@@ -9,10 +9,12 @@ import numpy as np
 from flask import Flask, render_template, request, make_response, jsonify
 from io import BytesIO
 import base64
+import itertools
 from sklearn.model_selection import train_test_split
 from matplotlib.pyplot import figure
 from sklearn.linear_model import SGDRegressor
 from sklearn import metrics
+from sklearn.metrics import confusion_matrix
 from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
 from urllib.request import Request
 from flask_cors import CORS, cross_origin
@@ -20,6 +22,8 @@ from werkzeug.utils import secure_filename
 from uuid import uuid4
 
 csv_file = {}
+X_database = {}
+Y_database = {}
 # Phase (1). data collection (file upload):
 def fileUpload(files):
   #  if request.method == 'POST':
@@ -41,48 +45,56 @@ def rmMissingvalues(id):
   df_preview = df_new[0:5]
   return ((df_preview.to_json()), 200)
 
-
-def scaling(df):
-  origin_charts = []
-  X = df.atemp.to_numpy()
-  Y = df.cnt.to_numpy()
-
-  # Scale the Data
-  # Visualize the full Dataset
-  # img_scatter
+def scaling(id):
+  df = csv_file[id]
+  df_new = df.dropna()
+  X = df_new.atemp.to_numpy()
+  Y = df_new.cnt.to_numpy()
   Y = (Y - np.mean(Y)) / np.std(Y)
+  return (X, Y)
 
+def scatterImg(id):
+  (X, Y) = scaling(id)
   plt.scatter(X, Y)
-  origin_charts.append(img_to_base64(plt))
+  
   plt.title("Visualize the full Dataset")
   plt.xlabel('X')
   plt.ylabel('Y')
 
+  return (json.dumps({'imgScatter':img_to_base64(plt)}), 200)
 
 
   # Split the Dataset into Training and Test Set
-  X_train_split, X_test_split, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
+def spliting(id, test_size=0.2, random_state=0):
+  (X, Y) = scaling(id)
+  X_train_split, X_test_split, Y_train, Y_test = train_test_split(X, Y, test_size=test_size, random_state=random_state)
+  return (X_train_split, X_test_split, Y_train, Y_test)
+
+def train_test_imgs(id, test_size, random_state):
+  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, float(test_size), int(random_state))
   plt.subplot(1, 2, 1) # row 1, col 2 index 1
   plt.scatter(X_train_split, Y_train)
-  origin_charts.append(img_to_base64(plt))
+  trainImg = img_to_base64(plt)
   plt.title("Training Data")
   plt.xlabel('X_train')
   plt.ylabel('Y_train')
 
   plt.subplot(1, 2, 2) # index 2
   plt.scatter(X_test_split, Y_test)
-  origin_charts.append(img_to_base64(plt))
-  plt.title("Test Data")
+  testImg = img_to_base64(plt)
+  plt.title("Testing Data")
   plt.xlabel('X_test')
   plt.ylabel('Y_test')
 
-  # plt.tight_layout()
+  return (json.dumps({'imgTrain': trainImg, 'imgTest': testImg}), 200)
 
+# proving X_train, X_test, regressor, and Y_pred
+def pre_train(id, test_size, random_state):
+  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, float(test_size), int(random_state))
   # Create a 2D array for training and test data to make it compatible with
   # scikit-learn (This is specific to scikit-learn because of the way it accepts input data)
   X_train = X_train_split.reshape(-1, 1)
   X_test = X_test_split.reshape(-1, 1)
-  X_train.shape, X_test.shape
 
   # Initialize Model
 
@@ -94,23 +106,57 @@ def scaling(df):
   # Predict on the Test Data
   Y_pred = regressor.predict(X_test)
 
+  return (X_train, X_test, X_train_split, X_test_split, regressor, Y_train, Y_test, Y_pred)
+
+  # plt.tight_layout()
+def modelTraining(id, test_size, random_state):
+  (_, _, _, X_test_split, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
+
   # Plot the predictions and the original test data
-  X_test_split.shape, Y_pred.shape, Y_test.shape
   plt.clf()
   plt.plot(X_test_split, Y_test, 'go', label='True data', alpha=0.5)
   plt.plot(X_test_split, Y_pred, '--', label='Predictions', alpha=0.5)
-  origin_charts.append(img_to_base64(plt))
+  
   plt.title("Prediction")
   
   plt.legend(loc='best')
 
+  return (json.dumps({'imgPrediction':img_to_base64(plt)}), 200)
+
+def accuracy(id, test_size, random_state):
+  (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
+  meanAbErr = str(metrics.mean_absolute_error(Y_test, Y_pred))
+  meanSqErr = str(metrics.mean_squared_error(Y_test, Y_pred))
+  rootMeanSqErr = str(np.sqrt(metrics.mean_squared_error(Y_test, Y_pred)))
   # Evaluate the quality of the training (Generate Evaluation Metrics)
-  # print('Mean Absolute Error:', metrics.mean_absolute_error(Y_test, Y_pred))
-  # print('Mean Squared Error:', metrics.mean_squared_error(Y_test, Y_pred))
-  # print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(Y_test, Y_pred)))
+  return (json.dumps({'Mean Absolute Error:': meanAbErr, 'Mean Squared Error:': meanSqErr, 'Root Mean Squared Error:': rootMeanSqErr}), 200)
 
-  return origin_charts
+def confusionMatrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
+  if normalize:
+      cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
+  plt.imshow(cm, interpolation='nearest', cmap=cmap)
+  plt.title(title)
+  plt.colorbar()
+  tick_marks = np.arange(len(classes))
+  plt.xticks(tick_marks, classes, rotation=45)
+  plt.yticks(tick_marks, classes)
+
+  fmt = '.2f' if normalize else 'd'
+  thresh = cm.max() / 2.
+  for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+    plt.text(j, i, format(cm[i, j], fmt), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+
+  plt.tight_layout()
+  plt.ylabel('True label')
+  plt.xlabel('Predicted label')
+
+def makeConfusionMatrix(test_size, random_state):
+  (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
+  cm = confusion_matrix(Y_test, Y_pred)
+  labels = ["+", "-"]
+  matrix = confusionMatrix(cm, labels)  
+  return (json.dumps({'confsMatrix': matrix}), 200)
 
 def generate_dataset():
   X = np.linspace(0, 2, 100)
