@@ -20,34 +20,34 @@ def getUploadedFile():
     return make_response(data, res)
 
 
-@app.route('/missingValues',methods=['GET'])
-def removeMissingValues():
-    rmResult = rmMissingvalues(request.args.get('id'))
+@app.route('/datasets/<id>/missingValues',methods=['GET'])
+def removeMissingValues(id):
+    rmResult = rmMissingvalues(id)
     return make_response(rmResult)
 
-@app.route('/scatter', methods = ['GET'])
-def make_scatter():
-    scatterChart = scatterImg(request.args.get('id'))
+@app.route('/datasets/<id>/scatter', methods = ['GET'])
+def make_scatter(id):
+    scatterChart = scatterImg(id)
     return make_response(scatterChart)
 
-@app.route('/train_test', methods = ['GET'])
-def traintest_imgs():
-    charts = train_test_imgs(request.args.get('id'), request.args.get('test_size'), request.args.get('random_state'))
+@app.route('/datasets/<id>/train_test', methods = ['GET'])
+def traintest_imgs(id):
+    charts = train_test_imgs(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(charts)
 
-@app.route('/model_training', methods = ['GET'])
-def prediction():
-    pre_chart = modelTraining(request.args.get('id'), request.args.get('test_size'), request.args.get('random_state'))
+@app.route('/datasets/<id>/model_training', methods = ['GET'])
+def prediction(id):
+    pre_chart = modelTraining(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(pre_chart)
 
-@app.route('/calculation', methods = ['GET'])
-def calculations():
-    results = accuracy(request.args.get('id'), request.args.get('test_size'), request.args.get('random_state'))
+@app.route('/datasets/<id>/calculation', methods = ['GET'])
+def calculations(id):
+    results = accuracy(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(results)
 
-@app.route('/matrix', methods = ['GET'])
-def getMatrix():
-    confMatrixImg = makeConfusionMatrix(request.args.get('id'), request.args.get('test_size'), request.args.get('random_state'))
+@app.route('/datasets/<id>/matrix', methods = ['GET'])
+def getMatrix(id):
+    confMatrixImg = makeConfusionMatrix(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(confMatrixImg)
 
 if __name__ == "__main__":
