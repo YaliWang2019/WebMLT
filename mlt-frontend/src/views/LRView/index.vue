@@ -34,10 +34,8 @@
                     </tr>
                 </tbody>
             </table>
-            <button @click="() => showLaterSteps = true">Show Later Steps</button>
+            
         </div>
-
-        
 
         <em>Please select the scaling mode you want to use: </em>
         <form @submit.prevent="scaleMode">
@@ -46,7 +44,9 @@
             <option value="standardization">Standardization</option>
             </select>
             <input type="submit" value="Submit" />
+            <button @click="() => showLaterSteps = true">Show Later Steps</button>
         </form>
+        
         <div v-if="showLaterSteps">
             <h3 align=left>Phase 3: Data visualization</h3>
             <h2 align=left></h2>
@@ -94,9 +94,19 @@
             },
             async getPreview(){
                 try{
-                    this.rmMissingValuesResult = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/missingValues`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/missingValues`)
+                    this.rmMissingValuesResult = res.data
                     this.showPreview = true
                 }catch(e){
+                    console.log(e)
+                }
+            },
+            async scaleMode(event){
+                console.log(event.target[0].value)
+                try{
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/scatter?scaleMode=${event.target[0].value}`)
+                    console.log(res.data)
+                } catch (e) {
                     console.log(e)
                 }
             },

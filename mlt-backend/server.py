@@ -27,7 +27,7 @@ def removeMissingValues(id):
 
 @app.route('/datasets/<id>/scatter', methods = ['GET'])
 def make_scatter(id):
-    scatterChart = scatterImg(id)
+    scatterChart = scatterImg(id, request.args.get('scaleMode'))
     return make_response(scatterChart)
 
 @app.route('/datasets/<id>/train_test', methods = ['GET'])

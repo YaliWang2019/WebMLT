@@ -45,12 +45,18 @@ def rmMissingvalues(id):
   df_preview = df_new[0:5]
   return ((df_preview.to_json()), 200)
 
-def scaling(id):
+def scaling(id, scaleMode):
   df = csv_file[id]
   df_new = df.dropna()
   X = df_new.atemp.to_numpy()
   Y = df_new.cnt.to_numpy()
-  Y = (Y - np.mean(Y)) / np.std(Y)
+  if scaleMode == "standardization":
+    # standardization
+    Y = (Y - np.mean(Y)) / np.std(Y)
+  elif scaleMode == "normalization":
+    # normalization
+    Y = (Y - np.min(Y)) / (np.max(Y) - np.min(Y))
+  # error catching logic required here
   return (X, Y)
 
 # Phase 3: data visualization (whole data visualization, training data visualization, and testing data visualization, return charts)
