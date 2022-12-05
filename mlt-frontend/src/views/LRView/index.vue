@@ -21,11 +21,18 @@
             <table>
                 <thead>
                     <tr>
-                        <th v-for="(_,index) in rmMissingValuesResult" :key = "index">
+                        <th v-for="(_,index) in rmMissingValuesResult" :key="index">
                             {{index}}
                         </th>
                     </tr>
                 </thead>
+                <tbody>
+                    <tr v-for="index in [0, 1, 2, 3, 4]" :key="index">
+                        <td v-for="(_,row) in rmMissingValuesResult" :key="row">
+                            {{rmMissingValuesResult[row][index]}}
+                        </td>
+                    </tr>
+                </tbody>
             </table>
             <button @click="() => showLaterSteps = true">Show Later Steps</button>
         </div>
