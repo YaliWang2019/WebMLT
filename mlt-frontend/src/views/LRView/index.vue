@@ -44,9 +44,13 @@
             <option value="standardization">Standardization</option>
             </select>
             <input type="submit" value="Submit" />
-            <button @click="() => showLaterSteps = true">Show Later Steps</button>
+            
         </form>
         
+        <h3 align=left>Scatter chart of your dataset: </h3>
+        <img :src="`data:image/png;base64,${scatterResource}`" v-if="scatterResource!=''"/>
+        <button @click="() => showLaterSteps = true">Show Later Steps</button>
+
         <div v-if="showLaterSteps">
             <h3 align=left>Phase 3: Data visualization</h3>
             <h2 align=left></h2>
@@ -106,6 +110,7 @@
                 try{
                     const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/scatter?scaleMode=${event.target[0].value}`)
                     console.log(res.data)
+                    this.scatterResource = res.data.imgScatter
                 } catch (e) {
                     console.log(e)
                 }
@@ -131,16 +136,11 @@
         },
         data() {
             return {
-                img_scatter: "",
-                img_train: "",
-                img_test: "",
-                img_prediction: "",
-                img_from_server: "",
-                charts: "",
                 file: "",
                 showPreview: false,
                 showLaterSteps: false,
                 rmMissingValuesResult: null,
+                scatterResource: "",
             }
         },
     })

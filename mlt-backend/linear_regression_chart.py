@@ -61,8 +61,8 @@ def scaling(id, scaleMode):
 
 # Phase 3: data visualization (whole data visualization, training data visualization, and testing data visualization, return charts)
 
-def scatterImg(id):
-  (X, Y) = scaling(id)
+def scatterImg(id, scaleMode):
+  (X, Y) = scaling(id, scaleMode)
   plt.scatter(X, Y)
   
   plt.title("Visualize the full Dataset")
