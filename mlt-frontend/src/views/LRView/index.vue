@@ -13,10 +13,26 @@
     </div>
 
     <h2 align = left>Phase 2: Data preprocessing</h2>
-    <h3 align = left>(This phase removes missing values from your dataset and scales your data.</h3>
+    <h3 align = left>This phase removes missing values from your dataset and scales your data.</h3>
+    <br />
+
+    <h3 align = left>The preview of your dataset: </h3>
+    <br />
+
+    <em>Please select the scaling mode you want to use: </em>
+        <form @submit.prevent="scaleMode">
+        <select name="scaling" id="scale">
+        <option value="normolization">Normalization</option>
+        <option value="standardization">Standardization</option>
+        </select>
+        <input type="submit" value="Submit" />
+        </form>
+
+
+    <h3 align = left></h3>
+    <h2 align = left></h2>
         <em>Please select the parameters you want to use: </em>
         <form @submit.prevent="dataPreprocess">
-        <label for="preprocessParameters">test</label>
         <select name="languages" id="lang">
         <option value="javascript">JavaScript</option>
         <option value="php">PHP</option>
@@ -32,7 +48,6 @@
   </div>
 </template>
 <script>
-
 import { defineComponent } from 'vue'
 import axios from "axios"
 export default defineComponent({
@@ -43,14 +58,14 @@ export default defineComponent({
             const formData = new FormData()
             formData.append('file', event.target[0].files[0])
             try {
-                const response = await axios.post('http://localhost:5000', formData, {
+                const response = await axios.post('http://localhost:5001/datasets', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
                     
                     
-                alert(response.data.massage)
+                alert("CSV file uploaded successfully!")
                     
             } catch (e) {
                 console.log(e)

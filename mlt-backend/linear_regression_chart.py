@@ -73,7 +73,7 @@ def spliting(id, test_size=0.2, random_state=0):
   return (X_train_split, X_test_split, Y_train, Y_test)
 
 def train_test_imgs(id, test_size, random_state):
-  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, float(test_size), int(random_state))
+  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, test_size, random_state)
   plt.subplot(1, 2, 1) # row 1, col 2 index 1
   plt.scatter(X_train_split, Y_train)
   trainImg = img_to_base64(plt)
@@ -93,7 +93,7 @@ def train_test_imgs(id, test_size, random_state):
 # Phase 4: model training
 # proving X_train, X_test, regressor, and Y_pred
 def pre_train(id, test_size, random_state):
-  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, float(test_size), int(random_state))
+  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, test_size, random_state)
   # Create a 2D array for training and test data to make it compatible with
   # scikit-learn (This is specific to scikit-learn because of the way it accepts input data)
   X_train = X_train_split.reshape(-1, 1)

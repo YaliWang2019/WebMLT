@@ -27,7 +27,7 @@
                 const formData = new FormData()
                 formData.append('file', event.target[0].files[0])
                 try {
-                    const response = await axios.post('http://localhost:5000', formData, {
+                    const response = await axios.post('http://localhost:5001', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }

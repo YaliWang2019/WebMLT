@@ -14,7 +14,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.debug = True
 CORS(app, resources={r"/*": {"origins": "*"}})
-@app.route('/files',methods=['POST'])
+@app.route('/datasets',methods=['POST'])
 def getUploadedFile():
     (data, res) = fileUpload(request.files)
     return make_response(data, res)
@@ -51,4 +51,4 @@ def getMatrix(id):
     return make_response(confMatrixImg)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port = 5000)
+    app.run(host='0.0.0.0', port = 5001)
