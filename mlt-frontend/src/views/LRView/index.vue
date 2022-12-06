@@ -56,12 +56,14 @@
             <h2 align=left></h2>
             <em>Please select the parameters you want to use: </em>
             <form @submit.prevent="dataPreprocess">
-            <select name="parameters" id="para">
-            <option value="testsize">test_size</option>
-            <option value="randomrate">random_rate</option>
             
-            </select>
-                <input type="submit" value="Submit" />
+            <em for="testSize">test_size = </em>
+            <input type="text" id="testSize" />
+            <br />
+            <em for="randomState">random_state = </em>
+            <input type="text" id="randomState" />
+            <br />
+            <input type="submit" value="Submit" />
             </form>
         </div>
     </div>
@@ -110,6 +112,9 @@
                     console.log(e)
                 }
             },
+            async dataPreprocess(event){
+                console.log(event)
+            }
             /* async dataPreprocess(event) {
                 console.log(event.target[0].files[0])
                 const formData = new FormData()
