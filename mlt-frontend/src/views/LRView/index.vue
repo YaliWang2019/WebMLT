@@ -57,10 +57,11 @@
             <form @submit.prevent="dataPreprocess">
             
             <em for="testSize">test_size = </em>
-            <input type="text" id="testSize" pattern="^([0-9]*(.[0-9]*)?)|(.[0-9]*)$" />
+            <input type="text" id="testSize" pattern="^[1-9][0-9]?$" />
+            <em>% (Input percentage here.)</em>
             <br />
             <em for="randomState">random_state = </em>
-            <input type="text" id="randomState" pattern="^([0-9]*(.[0-9]*)?)|(.[0-9]*)$" />
+            <input type="text" id="randomState" pattern="^[0-9]*$" />
             <br />
             <input type="submit" value="Submit" />
             </form>

@@ -73,8 +73,8 @@ def scatterImg(id, scaleMode):
 
 
   # Split the Dataset into Training and Test Set
-def spliting(id, test_size=0.2, random_state=0):
-  (X, Y) = scaling(id)
+def spliting(id, test_size=0.2, random_state=0, scaleMode="normalization"):
+  (X, Y) = scaling(id, scaleMode)
   X_train_split, X_test_split, Y_train, Y_test = train_test_split(X, Y, test_size=test_size, random_state=random_state)
   return (X_train_split, X_test_split, Y_train, Y_test)
 
