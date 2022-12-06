@@ -58,10 +58,10 @@
             <form @submit.prevent="dataPreprocess">
             
             <em for="testSize">test_size = </em>
-            <input type="text" id="testSize" />
+            <input type="text" id="testSize" pattern="^([0-9]*(.[0-9]*)?)|(.[0-9]*)$" />
             <br />
             <em for="randomState">random_state = </em>
-            <input type="text" id="randomState" />
+            <input type="text" id="randomState" pattern="^([0-9]*(.[0-9]*)?)|(.[0-9]*)$" />
             <br />
             <input type="submit" value="Submit" />
             </form>
@@ -113,7 +113,9 @@
                 }
             },
             async dataPreprocess(event){
-                console.log(event)
+                for(let i in event.target){
+                    console.log(event.target[i].value)
+                }
             }
             /* async dataPreprocess(event) {
                 console.log(event.target[0].files[0])
