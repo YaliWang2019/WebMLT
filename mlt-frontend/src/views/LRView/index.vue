@@ -69,7 +69,11 @@
             <h3 align=left>Scatter charts of your train and test datasets: </h3>
             <img :src="`data:image/png;base64,${trainTestResource[0]}`" v-if="trainTestResource[0]!=''"/>
             <img :src="`data:image/png;base64,${trainTestResource[1]}`" v-if="trainTestResource[1]!=''"/>
+
             <h3 align=left>Phase 4: Model training</h3>
+            <em>The prediction chart from your dataset: </em>
+            <button @click="getPredict" v-if="predictionImg=='' ">Get Prediction</button>
+            <img :src="`data:image/png;base64,${predictionImg}`" v-else />
         </div>
     </div>
 </template>
@@ -118,8 +122,6 @@
                 }
             },
             async dataPreprocess(event){
-                console.log(event.target[0].value)
-                console.log(event.target[1].value)
                 let params={}
                 if(event.target[0].value && event.target[0].value != ""){
                     params.test_size=parseInt(event.target[0].value)*0.01
@@ -127,11 +129,25 @@
                 if(event.target[1].value && event.target[1].value != ""){
                     params.random_state=parseInt(event.target[1].value)
                 }
-                const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/train_test`,{params})
-                console.log(res.data)
-                this.trainTestResource[0] = res.data.imgTrain
-                this.trainTestResouce[1] = res.data.imgTest
-            }
+                try{
+                    const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/train_test`,{params})
+                    console.log(res.data)
+                    this.trainTestResource[0] = res.data.imgTrain
+                    this.trainTestResouce[1] = res.data.imgTest
+                } catch (e) {
+                    console.log(e)
+                }
+            },
+
+            async getPredict(){
+                try{
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/model_training`)
+                    console.log(res.data)
+                    this.predictionImg = res.data.imgPrediction
+                } catch (e) {
+                    console.log(e)
+                }
+            },
             /* async dataPreprocess(event) {
                 console.log(event.target[0].files[0])
                 const formData = new FormData()
@@ -159,6 +175,7 @@
                 rmMissingValuesResult: null,
                 scatterResource: "",
                 trainTestResource: ["", ""],
+                predictionImg: "",
             }
         },
     })
