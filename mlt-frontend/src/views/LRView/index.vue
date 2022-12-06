@@ -66,6 +66,9 @@
             <input type="submit" value="Submit" />
             </form>
 
+            <h3 align=left>Scatter charts of your train and test datasets: </h3>
+            <img :src="`data:image/png;base64,${trainTestResource[0]}`" v-if="trainTestResource[0]!=''"/>
+            <img :src="`data:image/png;base64,${trainTestResource[1]}`" v-if="trainTestResource[1]!=''"/>
             <h3 align=left>Phase 4: Model training</h3>
         </div>
     </div>
@@ -119,13 +122,15 @@
                 console.log(event.target[1].value)
                 let params={}
                 if(event.target[0].value && event.target[0].value != ""){
-                    params.test_size=event.target[0].value
+                    params.test_size=parseInt(event.target[0].value)*0.01
                 }
                 if(event.target[1].value && event.target[1].value != ""){
-                    params.random_state=event.target[1].value
+                    params.random_state=parseInt(event.target[1].value)
                 }
                 const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/train_test`,{params})
                 console.log(res.data)
+                this.trainTestResource[0] = res.data.imgTrain
+                this.trainTestResouce[1] = res.data.imgTest
             }
             /* async dataPreprocess(event) {
                 console.log(event.target[0].files[0])
@@ -153,6 +158,7 @@
                 showLaterSteps: false,
                 rmMissingValuesResult: null,
                 scatterResource: "",
+                trainTestResource: ["", ""],
             }
         },
     })
