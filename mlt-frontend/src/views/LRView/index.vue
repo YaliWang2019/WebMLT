@@ -53,7 +53,6 @@
 
         <div v-if="showLaterSteps">
             <h3 align=left>Phase 3: Data visualization</h3>
-            <h2 align=left></h2>
             <em>Please select the parameters you want to use: </em>
             <form @submit.prevent="dataPreprocess">
             
@@ -65,6 +64,8 @@
             <br />
             <input type="submit" value="Submit" />
             </form>
+
+            <h3 align=left>Phase 4: Model training</h3>
         </div>
     </div>
 </template>
@@ -113,9 +114,17 @@
                 }
             },
             async dataPreprocess(event){
-                for(let i in event.target){
-                    console.log(event.target[i].value)
+                console.log(event.target[0].value)
+                console.log(event.target[1].value)
+                let params={}
+                if(event.target[0].value && event.target[0].value != ""){
+                    params.test_size=event.target[0].value
                 }
+                if(event.target[1].value && event.target[1].value != ""){
+                    params.random_state=event.target[1].value
+                }
+                const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/train_test`,{params})
+                console.log(res.data)
             }
             /* async dataPreprocess(event) {
                 console.log(event.target[0].files[0])
