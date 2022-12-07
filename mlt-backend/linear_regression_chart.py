@@ -63,6 +63,7 @@ def scaling(id, scaleMode):
 
 def scatterImg(id, scaleMode):
   (X, Y) = scaling(id, scaleMode)
+  plt.clf()
   plt.scatter(X, Y)
   
   plt.title("Visualize the full Dataset")
@@ -80,13 +81,14 @@ def spliting(id, test_size=0.2, random_state=0, scaleMode="normalization"):
 
 def train_test_imgs(id, test_size, random_state):
   (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, test_size, random_state)
+  plt.clf()
   plt.subplot(1, 2, 1) # row 1, col 2 index 1
   plt.scatter(X_train_split, Y_train)
   trainImg = img_to_base64(plt)
   plt.title("Training Data")
   plt.xlabel('X_train')
   plt.ylabel('Y_train')
-
+  plt.clf()
   plt.subplot(1, 2, 2) # index 2
   plt.scatter(X_test_split, Y_test)
   testImg = img_to_base64(plt)

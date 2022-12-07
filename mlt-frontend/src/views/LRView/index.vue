@@ -14,7 +14,7 @@
         <h2 align=left>Phase 2: Data preprocessing</h2>
         <h3 align=left>This phase removes missing values from your dataset and scales your data.</h3>
         <h3 align=left>The preview of your dataset after removing missing values: </h3>
-        <br />
+        
         <button @click="getPreview">Get Preview</button>
         <br />
         <div v-if="showPreview">
@@ -73,7 +73,8 @@
             <h3 align=left>Phase 4: Model training</h3>
             <em>The prediction chart from your dataset: </em>
             <button @click="getPredict" v-if="predictionImg=='' ">Get Prediction</button>
-            <img :src="`data:image/png;base64,${predictionImg}`" v-else />
+            <br />
+            <img :src="`data:image/png;base64,${predictionImg}`" v-if="predictionImg !=='' " />
         </div>
     </div>
 </template>
@@ -170,6 +171,7 @@
         data() {
             return {
                 file: "",
+                imgScatter: "",
                 showPreview: false,
                 showLaterSteps: false,
                 rmMissingValuesResult: null,
