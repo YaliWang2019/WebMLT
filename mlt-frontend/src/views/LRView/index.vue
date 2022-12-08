@@ -40,7 +40,7 @@
         <em>Please select the scaling mode you want to use: </em>
         <form @submit.prevent="scaleMode">
             <select name="scaling" id="scale">
-            <option value="normolization">Normalization</option>
+            <option value="normalization">Normalization</option>
             <option value="standardization">Standardization</option>
             </select>
             <input type="submit" value="Submit" />
@@ -67,14 +67,21 @@
             </form>
 
             <h3 align=left>Scatter charts of your train and test datasets: </h3>
-            <img :src="`data:image/png;base64,${trainTestResource[0]}`" v-if="trainTestResource[0]!=''"/>
-            <img :src="`data:image/png;base64,${trainTestResource[1]}`" v-if="trainTestResource[1]!=''"/>
+            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' "/>
+    
 
             <h3 align=left>Phase 4: Model training</h3>
             <em>The prediction chart from your dataset: </em>
-            <button @click="getPredict" v-if="predictionImg=='' ">Get Prediction</button>
+            <button @click="getPredict" v-if="predictionImg =='' ">Get Prediction</button>
             <br />
             <img :src="`data:image/png;base64,${predictionImg}`" v-if="predictionImg !=='' " />
+
+            <h3 align=left>Phase 5: Accuracy</h3>
+            <em>The calculated errors from your dataset: </em>
+            <button @click="getCalculation">Get Accuracy</button>
+            <div v-if="showAccuracy"></div>
+            <br />
+            
         </div>
     </div>
 </template>
@@ -113,7 +120,6 @@
                 }
             },
             async scaleMode(event){
-                console.log(event.target[0].value)
                 try{
                     const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/scatter?scaleMode=${event.target[0].value}`)
                     console.log(res.data)
@@ -133,19 +139,26 @@
                 try{
                     const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/train_test`,{params})
                     console.log(res.data)
-                    this.trainTestResource[0] = res.data.imgTrain
-                    this.trainTestResouce[1] = res.data.imgTest
+                    this.trainTestResource = res.data.trainTestestImg
+                    
                 } catch (e) {
                     console.log(e)
                 }
             },
-
             async getPredict(){
                 try{
                     const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/model_training`)
                     console.log(res.data)
                     this.predictionImg = res.data.imgPrediction
                 } catch (e) {
+                    console.log(e)
+                }
+            },
+            async getCalculation(){
+                try{
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/calculation`)
+                    this.showAccuracy = res.data
+                }catch(e){
                     console.log(e)
                 }
             },
@@ -178,6 +191,7 @@
                 scatterResource: "",
                 trainTestResource: ["", ""],
                 predictionImg: "",
+                showAccuracy: ""
             }
         },
     })

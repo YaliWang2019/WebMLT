@@ -64,6 +64,7 @@ def scaling(id, scaleMode):
 def scatterImg(id, scaleMode):
   (X, Y) = scaling(id, scaleMode)
   plt.clf()
+  figure(figsize=(8, 6), dpi=80)
   plt.scatter(X, Y)
   
   plt.title("Visualize the full Dataset")
@@ -80,28 +81,30 @@ def spliting(id, test_size=0.2, random_state=0, scaleMode="normalization"):
   return (X_train_split, X_test_split, Y_train, Y_test)
 
 def train_test_imgs(id, test_size, random_state):
-  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, test_size, random_state)
+  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, float(test_size), int(random_state))
   plt.clf()
+  figure(figsize=(15, 6), dpi=80)
   plt.subplot(1, 2, 1) # row 1, col 2 index 1
   plt.scatter(X_train_split, Y_train)
-  trainImg = img_to_base64(plt)
+  # trainImg = img_to_base64(plt)
   plt.title("Training Data")
   plt.xlabel('X_train')
   plt.ylabel('Y_train')
-  plt.clf()
+
   plt.subplot(1, 2, 2) # index 2
   plt.scatter(X_test_split, Y_test)
-  testImg = img_to_base64(plt)
   plt.title("Testing Data")
   plt.xlabel('X_test')
   plt.ylabel('Y_test')
+  plt.tight_layout()
+  trainTestestImg = img_to_base64(plt)
 
-  return (json.dumps({'imgTrain': trainImg, 'imgTest': testImg}), 200)
+  return (json.dumps({'trainTestestImg': trainTestestImg}), 200)
 
 # Phase 4: model training
 # proving X_train, X_test, regressor, and Y_pred
 def pre_train(id, test_size, random_state):
-  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, test_size, random_state)
+  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, float(test_size), int(random_state))
   # Create a 2D array for training and test data to make it compatible with
   # scikit-learn (This is specific to scikit-learn because of the way it accepts input data)
   X_train = X_train_split.reshape(-1, 1)
@@ -121,7 +124,7 @@ def pre_train(id, test_size, random_state):
 
   # plt.tight_layout()
 def modelTraining(id, test_size, random_state):
-  (_, _, _, X_test_split, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
+  (_, _, _, X_test_split, _, _, Y_test, Y_pred) = pre_train(id, float(test_size), int(random_state))
 
   # Plot the predictions and the original test data
   plt.clf()
@@ -136,7 +139,7 @@ def modelTraining(id, test_size, random_state):
 
 # Phase 5: accuracy
 def accuracy(id, test_size, random_state):
-  (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
+  (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, float(test_size), int(random_state))
   meanAbErr = str(metrics.mean_absolute_error(Y_test, Y_pred))
   meanSqErr = str(metrics.mean_squared_error(Y_test, Y_pred))
   rootMeanSqErr = str(np.sqrt(metrics.mean_squared_error(Y_test, Y_pred)))
@@ -165,7 +168,7 @@ def confusionMatrix(cm, classes, normalize=False, title='Confusion matrix', cmap
   return (img_to_base64(plt))
 
 def makeConfusionMatrix(id, test_size, random_state):
-  (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
+  (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, float(test_size), int(random_state))
   cm = confusion_matrix(Y_test, Y_pred)
   labels = ["+", "-"]
   matrix = confusionMatrix(cm, labels)  

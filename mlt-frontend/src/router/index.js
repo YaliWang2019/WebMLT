@@ -8,12 +8,17 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/LR',
+    path: '/linear_regression',
     name: 'Linear Regression Model',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "LR" */ '../views/LRView')
+  },
+  {
+    path: '/logistic_regression',
+    name: 'Logistic Regression Model',
+    component: () => import(/* webpackChunkName: "LGR" */ '../views/LGRView')
   }
 ]
 

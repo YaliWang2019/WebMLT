@@ -37,18 +37,21 @@ def traintest_imgs(id):
 
 @app.route('/datasets/<id>/model_training', methods = ['GET'])
 def prediction(id):
-    pre_chart = modelTraining(id, float(request.args.get('test_size')), int(request.args.get('random_state')))
+    pre_chart = modelTraining(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(pre_chart)
 
 @app.route('/datasets/<id>/calculation', methods = ['GET'])
 def calculations(id):
-    results = accuracy(id, float(request.args.get('test_size')), int(request.args.get('random_state')))
+    results = accuracy(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(results)
 
 @app.route('/datasets/<id>/matrix', methods = ['GET'])
 def getMatrix(id):
-    confMatrixImg = makeConfusionMatrix(id, float(request.args.get('test_size')), int(request.args.get('random_state')))
+    confMatrixImg = makeConfusionMatrix(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(confMatrixImg)
+
+
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = 5001)
