@@ -79,7 +79,7 @@
             <h3 align=left>Phase 5: Accuracy</h3>
             <em>The calculated errors from your dataset: </em>
             <button @click="getCalculation">Get Accuracy</button>
-            <div v-if="showAccuracy"></div>
+            <textarea v-if="showAccuracy"></textarea>
             <br />
             
         </div>
@@ -157,6 +157,7 @@
             async getCalculation(){
                 try{
                     const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/calculation`)
+                    console.log(res.data)
                     this.showAccuracy = res.data
                 }catch(e){
                     console.log(e)

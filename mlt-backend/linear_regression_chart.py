@@ -104,7 +104,7 @@ def train_test_imgs(id, test_size, random_state):
 # Phase 4: model training
 # proving X_train, X_test, regressor, and Y_pred
 def pre_train(id, test_size, random_state):
-  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, float(test_size), int(random_state))
+  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, test_size, random_state)
   # Create a 2D array for training and test data to make it compatible with
   # scikit-learn (This is specific to scikit-learn because of the way it accepts input data)
   X_train = X_train_split.reshape(-1, 1)
@@ -124,10 +124,11 @@ def pre_train(id, test_size, random_state):
 
   # plt.tight_layout()
 def modelTraining(id, test_size, random_state):
-  (_, _, _, X_test_split, _, _, Y_test, Y_pred) = pre_train(id, float(test_size), int(random_state))
+  (_, _, _, X_test_split, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
 
   # Plot the predictions and the original test data
   plt.clf()
+  figure(figsize=(8, 6), dpi=80)
   plt.plot(X_test_split, Y_test, 'go', label='True data', alpha=0.5)
   plt.plot(X_test_split, Y_pred, '--', label='Predictions', alpha=0.5)
   
@@ -139,7 +140,7 @@ def modelTraining(id, test_size, random_state):
 
 # Phase 5: accuracy
 def accuracy(id, test_size, random_state):
-  (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, float(test_size), int(random_state))
+  (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
   meanAbErr = str(metrics.mean_absolute_error(Y_test, Y_pred))
   meanSqErr = str(metrics.mean_squared_error(Y_test, Y_pred))
   rootMeanSqErr = str(np.sqrt(metrics.mean_squared_error(Y_test, Y_pred)))
