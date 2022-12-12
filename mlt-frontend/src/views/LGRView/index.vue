@@ -79,9 +79,13 @@
             <h3 align=left>Phase 5: Accuracy</h3>
             <em>The calculated errors from your dataset: </em>
             <button @click="getCalculation">Get Accuracy</button>
-            <div v-if="showAccuracy"></div>
+            <div v-if="showAccuracy">
+                <div v-for="i in showAccuracy" v-bind:key="i">
+                    {{i}} {{showAccuracy[i]}}
+                </div>
+            </div>
             <br />
-            <img :src="`data:image/png;base64,${predictionImg}`" v-if="predictionImg !=='' " />
+            
         </div>
     </div>
 </template>
@@ -120,7 +124,6 @@
                 }
             },
             async scaleMode(event){
-                console.log(event.target[0].value)
                 try{
                     const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/scatter?scaleMode=${event.target[0].value}`)
                     console.log(res.data)
@@ -158,7 +161,9 @@
             async getCalculation(){
                 try{
                     const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/calculation`)
+                    
                     this.showAccuracy = res.data
+                    this.showAccuracyValue = true
                 }catch(e){
                     console.log(e)
                 }
@@ -192,7 +197,8 @@
                 scatterResource: "",
                 trainTestResource: ["", ""],
                 predictionImg: "",
-                showAccuracy: ""
+                showAccuracy: {},
+                showAccuracyValue: false
             }
         },
     })
