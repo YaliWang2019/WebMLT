@@ -79,7 +79,7 @@
             <h3 align=left>Phase 5: Accuracy</h3>
             <em>The calculated errors from your dataset: </em>
             <button @click="getCalculation">Get Accuracy</button>
-            <textarea v-if="showAccuracy"></textarea>
+            <div v-if="showAccuracy != '' ">{{showAccuracy}}</div>
             <br />
             
         </div>
@@ -157,8 +157,10 @@
             async getCalculation(){
                 try{
                     const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/calculation`)
-                    console.log(res.data)
-                    this.showAccuracy = res.data
+                    
+                    this.showAccuracy[0] = res.data['Mean Absolute Error:']
+                    this.showAccuracy[1] = res.data['Mean Squared Error:']
+                    this.showAccuracy[2] = res.data['Root Mean Squared Error:']
                 }catch(e){
                     console.log(e)
                 }
@@ -192,7 +194,7 @@
                 scatterResource: "",
                 trainTestResource: ["", ""],
                 predictionImg: "",
-                showAccuracy: ""
+                showAccuracy: ["", "", ""]
             }
         },
     })
