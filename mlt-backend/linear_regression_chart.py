@@ -25,7 +25,7 @@ csv_file = {}
 X_database = {}
 Y_database = {}
 # Phase (1). data collection (file upload):
-def fileUpload(files):
+def lr_fileUpload(files):
   #  if request.method == 'POST':
   if files['file'].content_type != 'text/csv':
     return (json.dumps({'message': 'File must be a CSV'}), 400)
@@ -39,13 +39,13 @@ def fileUpload(files):
   return (json.dumps({'id': uuid}), 200)
 
 # Phase (2). data preprocessing (removing missing values and scaling, return processed dataframe preview): 
-def rmMissingvalues(id):
+def lr_rmMissingvalues(id):
   df = csv_file[id]
   df_new = df.dropna()
   df_preview = df_new[0:5]
   return ((df_preview.to_json()), 200)
 
-def scaling(id, scaleMode):
+def lr_scaling(id, scaleMode):
   df = csv_file[id]
   df_new = df.dropna()
   X = df_new.atemp.to_numpy()
@@ -61,8 +61,8 @@ def scaling(id, scaleMode):
 
 # Phase 3: data visualization (whole data visualization, training data visualization, and testing data visualization, return charts)
 
-def scatterImg(id, scaleMode):
-  (X, Y) = scaling(id, scaleMode)
+def lr_scatterImg(id, scaleMode):
+  (X, Y) = lr_scaling(id, scaleMode)
   plt.clf()
   figure(figsize=(8, 6), dpi=80)
   plt.scatter(X, Y)
@@ -71,17 +71,17 @@ def scatterImg(id, scaleMode):
   plt.xlabel('X')
   plt.ylabel('Y')
 
-  return (json.dumps({'imgScatter':img_to_base64(plt)}), 200)
+  return (json.dumps({'imgScatter':lr_img_to_base64(plt)}), 200)
 
 
   # Split the Dataset into Training and Test Set
-def spliting(id, test_size=0.2, random_state=0, scaleMode="normalization"):
-  (X, Y) = scaling(id, scaleMode)
+def lr_spliting(id, test_size=0.2, random_state=0, scaleMode="normalization"):
+  (X, Y) = lr_scaling(id, scaleMode)
   X_train_split, X_test_split, Y_train, Y_test = train_test_split(X, Y, test_size=test_size, random_state=random_state)
   return (X_train_split, X_test_split, Y_train, Y_test)
 
-def train_test_imgs(id, test_size, random_state):
-  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, float(test_size), int(random_state))
+def lr_train_test_imgs(id, test_size, random_state):
+  (X_train_split, X_test_split, Y_train, Y_test) = lr_spliting(id, float(test_size), int(random_state))
   plt.clf()
   figure(figsize=(15, 6), dpi=80)
   plt.subplot(1, 2, 1) # row 1, col 2 index 1
@@ -97,14 +97,14 @@ def train_test_imgs(id, test_size, random_state):
   plt.xlabel('X_test')
   plt.ylabel('Y_test')
   plt.tight_layout()
-  trainTestestImg = img_to_base64(plt)
+  trainTestestImg = lr_img_to_base64(plt)
 
   return (json.dumps({'trainTestestImg': trainTestestImg}), 200)
 
 # Phase 4: model training
 # proving X_train, X_test, regressor, and Y_pred
-def pre_train(id, test_size, random_state):
-  (X_train_split, X_test_split, Y_train, Y_test) = spliting(id, test_size, random_state)
+def lr_pre_train(id, test_size, random_state):
+  (X_train_split, X_test_split, Y_train, Y_test) = lr_spliting(id, test_size, random_state)
   # Create a 2D array for training and test data to make it compatible with
   # scikit-learn (This is specific to scikit-learn because of the way it accepts input data)
   X_train = X_train_split.reshape(-1, 1)
@@ -123,8 +123,8 @@ def pre_train(id, test_size, random_state):
   return (X_train, X_test, X_train_split, X_test_split, regressor, Y_train, Y_test, Y_pred)
 
   # plt.tight_layout()
-def modelTraining(id, test_size, random_state):
-  (_, _, _, X_test_split, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
+def lr_modelTraining(id, test_size, random_state):
+  (_, _, _, X_test_split, _, _, Y_test, Y_pred) = lr_pre_train(id, test_size, random_state)
 
   # Plot the predictions and the original test data
   plt.clf()
@@ -136,11 +136,11 @@ def modelTraining(id, test_size, random_state):
   
   plt.legend(loc='best')
 
-  return (json.dumps({'imgPrediction':img_to_base64(plt)}), 200)
+  return (json.dumps({'imgPrediction':lr_img_to_base64(plt)}), 200)
 
 # Phase 5: accuracy
-def accuracy(id, test_size, random_state):
-  (_, _, _, _, _, _, Y_test, Y_pred) = pre_train(id, test_size, random_state)
+def lr_accuracy(id, test_size, random_state):
+  (_, _, _, _, _, _, Y_test, Y_pred) = lr_pre_train(id, test_size, random_state)
   meanAbErr = str(metrics.mean_absolute_error(Y_test, Y_pred))
   meanSqErr = str(metrics.mean_squared_error(Y_test, Y_pred))
   rootMeanSqErr = str(np.sqrt(metrics.mean_squared_error(Y_test, Y_pred)))
@@ -155,7 +155,7 @@ def generate_dataset():
 
 
 
-def img_to_base64(plt):
+def lr_img_to_base64(plt):
   chart = BytesIO()
   plt.savefig(chart, format = 'png')
   chart.seek(0)

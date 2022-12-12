@@ -103,7 +103,7 @@
                 const formData = new FormData()
                 formData.append('file', event.target[0].files[0])
                 try {
-                    const response = await axios.post('http://localhost:5001/lrdatasets', formData, {
+                    const response = await axios.post('http://localhost:5001//datasets/linear_regression', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -116,7 +116,7 @@
             },
             async getPreview(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/lrdatasets/${localStorage.getItem('id')}/missingValues`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/linear_regression/missing_values`)
                     this.rmMissingValuesResult = res.data
                     this.showPreview = true
                 }catch(e){
@@ -125,7 +125,7 @@
             },
             async scaleMode(event){
                 try{
-                    const res = await axios.get(`http://localhost:5001/lrdatasets/${localStorage.getItem("id")}/scatter?scaleMode=${event.target[0].value}`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/linear_regression/scatter?scaleMode=${event.target[0].value}`)
                     console.log(res.data)
                     this.scatterResource = res.data.imgScatter
                 } catch (e) {
@@ -141,7 +141,7 @@
                     params.random_state=parseInt(event.target[1].value)
                 }
                 try{
-                    const res=await axios.get(`http://localhost:5001/lrdatasets/${localStorage.getItem("id")}/train_test`,{params})
+                    const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/linear_regression/train_test_datasets`,{params})
                     console.log(res.data)
                     this.trainTestResource = res.data.trainTestestImg
                     
@@ -151,7 +151,7 @@
             },
             async getPredict(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/lrdatasets/${localStorage.getItem("id")}/model_training`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/linear_regression/model_training_result`)
                     console.log(res.data)
                     this.predictionImg = res.data.imgPrediction
                 } catch (e) {
@@ -160,7 +160,7 @@
             },
             async getCalculation(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/lrdatasets/${localStorage.getItem('id')}/calculation`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/linear_regression/calculation`)
                     
                     this.showAccuracy = res.data
                     this.showAccuracyValue = true
