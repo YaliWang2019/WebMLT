@@ -38,6 +38,8 @@
         </div>
 
         <em>Please select the scaling mode you want to use: </em>
+        <em>Normalization: Y = (Y - np.min(Y)) / (np.max(Y) - np.min(Y))</em>
+        <em>Standardization: Y = (Y - np.mean(Y)) / np.std(Y)</em>
         <form @submit.prevent="scaleMode">
             <select name="scaling" id="scale">
             <option value="normalization">Normalization</option>
@@ -168,24 +170,7 @@
                     console.log(e)
                 }
             },
-            /* async dataPreprocess(event) {
-                console.log(event.target[0].files[0])
-                const formData = new FormData()
-                formData.append('file', event.target[0].files[0])
-                try {
-                    const response = await axios.post('http://localhost:5000', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    })
-                        
-                        
-                    alert(response.data.massage)
-                        
-                } catch (e) {
-                    console.log(e)
-                }
-            } */
+            
         },
         data() {
             return {

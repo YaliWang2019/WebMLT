@@ -19,13 +19,13 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 #---------------------------------------------------------------------#
 # Linear Regression
 @app.route('/datasets/linear_regression',methods=['POST'])
-def lrGetUploadedFile():
+def lr_getUploadedFile():
     (data, res) = lr_fileUpload(request.files)
     return make_response(data, res)
 
 
 @app.route('/datasets/<id>/linear_regression/missing_values',methods=['GET'])
-def lrRemoveMissingValues(id):
+def lr_removeMissingValues(id):
     rmResult = lr_rmMissingvalues(id)
     return make_response(rmResult)
 
@@ -54,12 +54,12 @@ def lr_calculations(id):
 #---------------------------------------------------------------------#
 # Logistic Regression
 @app.route('/datasets/logistic_regression',methods=['POST'])
-def lgrGetUploadedFile():
+def lgr_getUploadedFile():
     (data, res) = lgr_fileUpload(request.files)
     return make_response(data, res)
 
 @app.route('/datasets/<id>/logistic_regression/missing_values',methods=['GET'])
-def lgrRemoveMissingValues(id):
+def lgr_removeMissingValues(id):
     rmResult = lgr_rmMissingvalues(id)
     return make_response(rmResult)
 
@@ -79,12 +79,12 @@ def lgr_prediction(id):
     return make_response(pre_chart)
 
 @app.route('/datasets/<id>/logistic_regression/calculation', methods = ['GET'])
-def calculations(id):
+def lgr_calculations(id):
     results = lgr_accuracy(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(results)
 
 @app.route('/datasets/<id>/logistic_regression/matrix', methods = ['GET'])
-def lgrGetMatrix(id):
+def lgr_getMatrix(id):
     confMatrixImg = lgr_makeConfusionMatrix(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(confMatrixImg)
 

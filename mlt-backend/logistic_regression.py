@@ -48,11 +48,10 @@ def lgr_rmMissingvalues(id):
 def lgr_scaling(id, scaleMode):
   df = csv_file[id]
   df_new = df.dropna()
-  X = df.iloc[:, 2:]
-  y = df.iloc[:, 1]
-  feature_names = df.columns
-  labels = feature_names[1]
-  cm_labels = ["malignant", "benign"]
+  X = df_new.iloc[:, 2:]
+  y = df_new.iloc[:, 1]
+  # feature_names = df.columns
+  # labels = feature_names[1]
 
   # Map labels from ['M', 'B'] to [0, 1] space
   y = np.where(y=='M', 0, 1)
@@ -118,18 +117,20 @@ def lgr_pre_train(id, test_size, random_state):
 
 # Train Logistic Regression Classifer
   clf.fit(X_train, y_train)
+  #Predict the response for test dataset
+  y_pred = clf.predict(X_test)
 
-  return (X_train, X_test, X_train_split, X_test_split, regressor, Y_train, Y_test, Y_pred)
+  return (X_train, X_test, y_train, y_test, y_pred)
 
   # plt.tight_layout()
 def lgr_modelTraining(id, test_size, random_state):
-  (_, _, _, X_test_split, _, _, Y_test, Y_pred) = lgr_pre_train(id, test_size, random_state)
+  (X_train, X_test, _, y_test, y_pred) = lgr_pre_train(id, test_size, random_state)
 
   # Plot the predictions and the original test data
   plt.clf()
   figure(figsize=(8, 6), dpi=80)
-  plt.plot(X_test_split, Y_test, 'go', label='True data', alpha=0.5)
-  plt.plot(X_test_split, Y_pred, '--', label='Predictions', alpha=0.5)
+  plt.plot(X_train, y_test, 'go', label='True data', alpha=0.5)
+  plt.plot(X_test, y_pred, '--', label='Predictions', alpha=0.5)
   
   plt.title("Prediction")
   
@@ -139,39 +140,39 @@ def lgr_modelTraining(id, test_size, random_state):
 
 # Phase 5: accuracy
 def lgr_accuracy(id, test_size, random_state):
-  (_, _, _, _, _, _, Y_test, Y_pred) = lgr_pre_train(id, test_size, random_state)
-  meanAbErr = str(metrics.mean_absolute_error(Y_test, Y_pred))
-  meanSqErr = str(metrics.mean_squared_error(Y_test, Y_pred))
-  rootMeanSqErr = str(np.sqrt(metrics.mean_squared_error(Y_test, Y_pred)))
+  (_, _, _, y_test, y_pred) = lgr_pre_train(id, test_size, random_state)
+  modelAccuracy = str(metrics.accuracy_score(y_test, y_pred))
+  modelPrecision = str(metrics.precision_score(y_test, y_pred))
+  modelRecall = str(metrics.recall_score(y_test, y_pred))
   # Evaluate the quality of the training (Generate Evaluation Metrics)
-  return (json.dumps({'Mean Absolute Error:': meanAbErr, 'Mean Squared Error:': meanSqErr, 'Root Mean Squared Error:': rootMeanSqErr}), 200)
+  return (json.dumps({'Model Accuracy:': modelAccuracy, 'Model Precision:': modelPrecision, 'Model Recall:': modelRecall}), 200)
 
 def lgr_confusionMatrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
-  if normalize:
-      cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
-  plt.imshow(cm, interpolation='nearest', cmap=cmap)
-  plt.title(title)
-  plt.colorbar()
-  tick_marks = np.arange(len(classes))
-  plt.xticks(tick_marks, classes, rotation=45)
-  plt.yticks(tick_marks, classes)
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
 
-  fmt = '.2f' if normalize else 'd'
-  thresh = cm.max() / 2.
-  for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-    plt.text(j, i, format(cm[i, j], fmt), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+    fmt = '.2f' if normalize else 'd'
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, format(cm[i, j], fmt), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
-  plt.tight_layout()
-  plt.ylabel('True label')
-  plt.xlabel('Predicted label')
-  return (lgr_img_to_base64(plt))
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    return (lgr_img_to_base64(plt))
 
 def lgr_makeConfusionMatrix(id, test_size, random_state):
-  (_, _, _, _, _, _, Y_test, Y_pred) = lgr_pre_train(id, float(test_size), int(random_state))
-  cm = confusion_matrix(Y_test, Y_pred)
-  labels = ["+", "-"]
-  matrix = lgr_confusionMatrix(cm, labels)  
+  (_, _, _, y_test, y_pred) = lgr_pre_train(id, float(test_size), int(random_state))
+  cm = confusion_matrix(y_test, y_pred)
+  cm_labels = ["malignant", "benign"]
+  matrix = lgr_confusionMatrix(cm, cm_labels)  
   return (json.dumps({'confsMatrix': matrix}), 200)
 
 

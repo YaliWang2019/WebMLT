@@ -103,7 +103,7 @@
                 const formData = new FormData()
                 formData.append('file', event.target[0].files[0])
                 try {
-                    const response = await axios.post('http://localhost:5001/datasets', formData, {
+                    const response = await axios.post('http://localhost:5001/datasets/logistic_regression', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -116,7 +116,7 @@
             },
             async getPreview(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/logistic_regression/missing_alues`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/logistic_regression/missing_values`)
                     this.rmMissingValuesResult = res.data
                     this.showPreview = true
                 }catch(e){
@@ -168,24 +168,7 @@
                     console.log(e)
                 }
             },
-            /* async dataPreprocess(event) {
-                console.log(event.target[0].files[0])
-                const formData = new FormData()
-                formData.append('file', event.target[0].files[0])
-                try {
-                    const response = await axios.post('http://localhost:5000', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    })
-                        
-                        
-                    alert(response.data.massage)
-                        
-                } catch (e) {
-                    console.log(e)
-                }
-            } */
+            
         },
         data() {
             return {
@@ -195,7 +178,7 @@
                 showLaterSteps: false,
                 rmMissingValuesResult: null,
                 scatterResource: "",
-                trainTestResource: ["", ""],
+                trainTestResource: "",
                 predictionImg: "",
                 showAccuracy: {},
                 showAccuracyValue: false
