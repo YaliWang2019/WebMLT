@@ -9,16 +9,10 @@ import numpy as np
 from flask import Flask, render_template, request, make_response, jsonify
 from io import BytesIO
 import base64
-import itertools
 from sklearn.model_selection import train_test_split
 from matplotlib.pyplot import figure
 from sklearn.linear_model import SGDRegressor
 from sklearn import metrics
-from sklearn.metrics import confusion_matrix
-from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
-from urllib.request import Request
-from flask_cors import CORS, cross_origin
-from werkzeug.utils import secure_filename
 from uuid import uuid4
 
 csv_file = {}
@@ -70,14 +64,14 @@ def lr_scatterImg(id, scaleMode):
   plt.title("Visualize the full Dataset")
   plt.xlabel('X')
   plt.ylabel('Y')
-
-  return (json.dumps({'imgScatter':lr_img_to_base64(plt)}), 200)
+  imgScatter = lr_img_to_base64(plt)
+  return (json.dumps({'imgScatter': imgScatter}), 200)
 
 
   # Split the Dataset into Training and Test Set
 def lr_spliting(id, test_size=0.2, random_state=0, scaleMode="normalization"):
   (X, Y) = lr_scaling(id, scaleMode)
-  X_train_split, X_test_split, Y_train, Y_test = train_test_split(X, Y, test_size=test_size, random_state=random_state)
+  X_train_split, X_test_split, Y_train, Y_test = train_test_split(X, Y, test_size = test_size, random_state = random_state)
   return (X_train_split, X_test_split, Y_train, Y_test)
 
 def lr_train_test_imgs(id, test_size, random_state):
@@ -86,7 +80,6 @@ def lr_train_test_imgs(id, test_size, random_state):
   figure(figsize=(15, 6), dpi=80)
   plt.subplot(1, 2, 1) # row 1, col 2 index 1
   plt.scatter(X_train_split, Y_train)
-  # trainImg = img_to_base64(plt)
   plt.title("Training Data")
   plt.xlabel('X_train')
   plt.ylabel('Y_train')
@@ -97,9 +90,9 @@ def lr_train_test_imgs(id, test_size, random_state):
   plt.xlabel('X_test')
   plt.ylabel('Y_test')
   plt.tight_layout()
-  trainTestestImg = lr_img_to_base64(plt)
+  trainTestImg = lr_img_to_base64(plt)
 
-  return (json.dumps({'trainTestestImg': trainTestestImg}), 200)
+  return (json.dumps({'trainTestestImg': trainTestImg}), 200)
 
 # Phase 4: model training
 # proving X_train, X_test, regressor, and Y_pred
@@ -146,13 +139,6 @@ def lr_accuracy(id, test_size, random_state):
   rootMeanSqErr = str(np.sqrt(metrics.mean_squared_error(Y_test, Y_pred)))
   # Evaluate the quality of the training (Generate Evaluation Metrics)
   return (json.dumps({'Mean Absolute Error:': meanAbErr, 'Mean Squared Error:': meanSqErr, 'Root Mean Squared Error:': rootMeanSqErr}), 200)
-
-
-def generate_dataset():
-  X = np.linspace(0, 2, 100)
-  Y = 1.5 * X + np.random.randn(*X.shape) * 0.2 + 0.5
-  return X, Y
-
 
 
 def lr_img_to_base64(plt):

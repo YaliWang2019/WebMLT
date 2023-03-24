@@ -11,45 +11,21 @@
         <!-- MAIN CONTAINER -->
         <section class="main-container">
             <h1 id="tools">Machine Learning Models</h1>
-
-            <button class="button-1" role="button" text-decoration = none><router-link to="/linear_regression">Linear Regression Model</router-link></button>
-            <br />
-            <br />
-            <button class="button-1" role="button" text-decoration = none><router-link to="/logistic_regression">Logistic Regression Model</router-link></button>
-            <br />
-            <br />
-            <!--<div class="TextArea">
-            <label for="input">Please input the x1 value.</label>
-            <input type="text" id="ID1" v-model="x1Value" />
-
-            <br />
-            <label for="input">Please input the x2 value.</label>
-            <input type="text" id="ID2" v-model="x2Value" />
-            <br />
-            <button onclick="submitForms()" @click="scipy">Submit</button>
-            <br />
-
-            <img style="width:400px" :src="`data:image/png;base64,${img_from_server}`" v-if="img_from_server !== ''" />
-            </div>-->
-            <!--<div class="location" id="home">-->
-
-            <!--
-                <div>
-                <em>Please upload a csv file.</em>
-                <form @submit.prevent="submit">
-                    <input type="file" name="file" />
-                    <button type="submit">Submit</button>
-                </form>
-                <br />
-                <img style="width:400px" :src="`data:image/png;base64,${img_from_server}`" v-if="img_from_server !== ''" />
+            <table style="width:100%" border="none">
+                <tr>
+                  <td><button class="button-1" role="button" text-decoration = none><router-link to="/linear_regression">Linear Regression Model</router-link></button></td>
+                  <td><button class="button-1" role="button" text-decoration = none><router-link to="/logistic_regression">Logistic Regression Model</router-link></button></td>
+                  <td><button class="button-1" role="button" text-decoration = none><router-link to="/polynomial_regression">Polynomial Regression Model</router-link></button></td>
+                </tr>
+            
+                <tr>
+                  <td><button class="button-1" role="button" text-decoration = none><router-link to="/k_means_clustering">K Means Clustering Model</router-link></button></td>
+                  <td><button class="button-1" role="button" text-decoration = none><router-link to="/svm">SVM Model</router-link></button></td>
+                  <td><button class="button-1" role="button" text-decoration = none><router-link to="/neural_network">Neural Network Model</router-link></button></td>
+                </tr>
                 
-            </div>
-            <h1 id="tools">TensorFlow</h1>
-            <div class="box">
-
-            </div>
-            -->
-            <!--</div>-->
+            </table>
+            
 
             <div class="box">
 
@@ -62,3 +38,4 @@
 
     </div>
 </div> 
+

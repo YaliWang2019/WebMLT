@@ -1,6 +1,6 @@
 <template>
-    <div class="LGR">
-        <h1 align=left>Logistic Regression Model</h1>
+    <div class="Poly">
+        <h1 align=left>Polynomial Regression Model</h1>
         <br />
         <h2 align=left>Phase 1: File upload </h2>
         <div>
@@ -52,16 +52,12 @@
             
         </form>
         
-        <h3 align=left>Feature labels of your dataset: </h3>
-        <div v-if="features">
-            <div v-for="i in features" v-bind:key="i">
-                {{i}} {{features[i]}}
-            </div>
-        </div>
+        <h3 align=left>Scatter chart of your dataset: </h3>
+        <img :src="`data:image/png;base64,${scatterResource}`" v-if="scatterResource!=''"/>
         <button @click="() => showLaterSteps = true">Show Later Steps</button>
 
         <div v-if="showLaterSteps">
-            <h2 align=left>Phase 3: Data visualization</h2>
+            <h3 align=left>Phase 3: Data visualization</h3>
             <em>Please select the parameters you want to use: </em>
             <form @submit.prevent="dataPreprocess">
             
@@ -75,21 +71,17 @@
             <input type="submit" value="Submit" />
             </form>
 
-            <h3 align=left>Shapes of the split datasets: </h3>
-            <div v-if="shapes">
-                <div v-for="i in shapes" v-bind:key="i">
-                    {{i}} {{shapes[i]}}
-                </div>
-            </div>
+            <h3 align=left>Scatter charts of your train and test datasets: </h3>
+            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' "/>
     
 
-            <h2 align=left>Phase 4: Model training</h2>
+            <h3 align=left>Phase 4: Model training</h3>
             <em>The prediction chart from your dataset: </em>
-            <button @click="getPredict" v-if="trainTestResource =='' ">Get Predicted Confusion Matrix</button>
+            <button @click="getPredict" v-if="predictionImg =='' ">Get Prediction</button>
             <br />
-            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' " />
+            <img :src="`data:image/png;base64,${predictionImg}`" v-if="predictionImg !=='' " />
 
-            <h2 align=left>Phase 5: Accuracy</h2>
+            <h3 align=left>Phase 5: Accuracy</h3>
             <em>The calculated errors from your dataset: </em>
             <button @click="getCalculation">Get Accuracy</button>
             <div v-if="showAccuracy">
@@ -109,14 +101,14 @@
     } from 'vue'
     import axios from "axios"
     export default defineComponent({
-        name: 'LGRView',
+        name: 'PolyView',
         methods: {
             async submitFile(event) {
                 console.log(event.target[0].files[0])
                 const formData = new FormData()
                 formData.append('file', event.target[0].files[0])
                 try {
-                    const response = await axios.post('http://localhost:5001/datasets/logistic_regression', formData, {
+                    const response = await axios.post('http://localhost:5001/datasets/polynomial_regression', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -129,7 +121,7 @@
             },
             async getPreview(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/logistic_regression/missing_values`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/polynomial_regression/missing_values`)
                     this.rmMissingValuesResult = res.data
                     this.showPreview = true
                 }catch(e){
@@ -138,10 +130,9 @@
             },
             async scaleMode(event){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/logistic_regression/get_features?scaleMode=${event.target[0].value}`)
-                    this.features = res.data
-                    this.featuresValue = true
-                    
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/polynomial_regression/scatter?scaleMode=${event.target[0].value}`)
+                    console.log(res.data)
+                    this.scatterResource = res.data.imgScatter
                 } catch (e) {
                     console.log(e)
                 }
@@ -155,10 +146,9 @@
                     params.random_state=parseInt(event.target[1].value)
                 }
                 try{
-                    const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/logistic_regression/datasets_shapes`,{params})
-                    
-                    this.shapes = res.data
-                    this.shapesValue = true
+                    const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/polynomial_regression/train_test_results`,{params})
+                    console.log(res.data)
+                    this.trainTestResource = res.data.trainTestestImg
                     
                 } catch (e) {
                     console.log(e)
@@ -166,16 +156,16 @@
             },
             async getPredict(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/logistic_regression/model_training_result`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/polynomial_regression/model_training_result`)
                     console.log(res.data)
-                    this.trainTestResource = res.data.confsMatrix
+                    this.predictionImg = res.data.imgPrediction
                 } catch (e) {
                     console.log(e)
                 }
             },
             async getCalculation(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/logistic_regression/calculation`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/polynomial_regression/calculation`)
                     
                     this.showAccuracy = res.data
                     this.showAccuracyValue = true
@@ -188,15 +178,13 @@
         data() {
             return {
                 file: "",
-                features: {},
-                featuresValue: false,
+                imgScatter: "",
                 showPreview: false,
                 showLaterSteps: false,
                 rmMissingValuesResult: null,
-                
-                shapes: {},
-                shapesValue: false,
+                scatterResource: "",
                 trainTestResource: "",
+                predictionImg: "",
                 showAccuracy: {},
                 showAccuracyValue: false
             }

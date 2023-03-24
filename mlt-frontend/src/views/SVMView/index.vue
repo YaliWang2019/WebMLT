@@ -1,6 +1,6 @@
 <template>
-    <div class="LGR">
-        <h1 align=left>Logistic Regression Model</h1>
+    <div class="SVM">
+        <h1 align=left>SVM Model</h1>
         <br />
         <h2 align=left>Phase 1: File upload </h2>
         <div>
@@ -38,11 +38,6 @@
         </div>
 
         <em>Please select the scaling mode you want to use: </em>
-        <br />
-        <em>Normalization: Y = (Y - np.min(Y)) / (np.max(Y) - np.min(Y))</em>
-        <br />
-        <em>Standardization: Y = (Y - np.mean(Y)) / np.std(Y)</em>
-        <br />
         <form @submit.prevent="scaleMode">
             <select name="scaling" id="scale">
             <option value="normalization">Normalization</option>
@@ -52,16 +47,12 @@
             
         </form>
         
-        <h3 align=left>Feature labels of your dataset: </h3>
-        <div v-if="features">
-            <div v-for="i in features" v-bind:key="i">
-                {{i}} {{features[i]}}
-            </div>
-        </div>
+        <h3 align=left>Scatter chart of your dataset: </h3>
+        <img :src="`data:image/png;base64,${scatterResource}`" v-if="scatterResource!=''"/>
         <button @click="() => showLaterSteps = true">Show Later Steps</button>
 
         <div v-if="showLaterSteps">
-            <h2 align=left>Phase 3: Data visualization</h2>
+            <h3 align=left>Phase 3: Data visualization</h3>
             <em>Please select the parameters you want to use: </em>
             <form @submit.prevent="dataPreprocess">
             
@@ -69,27 +60,26 @@
             <input type="text" id="testSize" pattern="^[1-9][0-9]?$" />
             <em>% (Input percentage here.)</em>
             <br />
-            <em for="randomState">random_state = </em>
-            <input type="text" id="randomState" pattern="^[0-9]*$" />
-            <br />
+            
             <input type="submit" value="Submit" />
             </form>
 
-            <h3 align=left>Shapes of the split datasets: </h3>
-            <div v-if="shapes">
-                <div v-for="i in shapes" v-bind:key="i">
-                    {{i}} {{shapes[i]}}
-                </div>
-            </div>
+            <h3 align=left>Scatter charts of your train and test datasets: </h3>
+            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' "/>
     
 
-            <h2 align=left>Phase 4: Model training</h2>
+            <h3 align=left>Phase 4: Model training</h3>
             <em>The prediction chart from your dataset: </em>
-            <button @click="getPredict" v-if="trainTestResource =='' ">Get Predicted Confusion Matrix</button>
             <br />
-            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' " />
+            <button @click="getSolution" v-if="solutionResource =='' ">Get Solution Plot</button>
+            <br />
+            <img :src="`data:image/png;base64,${solutionResource}`" v-if="solutionResource !=='' " />
+            <br />
+            <button @click="getConfMatrix" v-if="confMatrixResource =='' ">Get Confusion Matrix Plot</button>
+            <br />
+            <img :src="`data:image/png;base64,${confMatrixResource}`" v-if="confMatrixResource !=='' " />
 
-            <h2 align=left>Phase 5: Accuracy</h2>
+            <h3 align=left>Phase 5: Accuracy</h3>
             <em>The calculated errors from your dataset: </em>
             <button @click="getCalculation">Get Accuracy</button>
             <div v-if="showAccuracy">
@@ -109,14 +99,14 @@
     } from 'vue'
     import axios from "axios"
     export default defineComponent({
-        name: 'LGRView',
+        name: 'SVMView',
         methods: {
             async submitFile(event) {
                 console.log(event.target[0].files[0])
                 const formData = new FormData()
                 formData.append('file', event.target[0].files[0])
                 try {
-                    const response = await axios.post('http://localhost:5001/datasets/logistic_regression', formData, {
+                    const response = await axios.post('http://localhost:5001/datasets/svm', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -129,7 +119,7 @@
             },
             async getPreview(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/logistic_regression/missing_values`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/svm/missing_values`)
                     this.rmMissingValuesResult = res.data
                     this.showPreview = true
                 }catch(e){
@@ -138,9 +128,9 @@
             },
             async scaleMode(event){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/logistic_regression/get_features?scaleMode=${event.target[0].value}`)
-                    this.features = res.data
-                    this.featuresValue = true
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/svm/scatter?scaleMode=${event.target[0].value}`)
+                    console.log(res.data)
+                    this.scatterResource = res.data.imgScatter
                     
                 } catch (e) {
                     console.log(e)
@@ -151,31 +141,37 @@
                 if(event.target[0].value && event.target[0].value != ""){
                     params.test_size=parseInt(event.target[0].value)*0.01
                 }
-                if(event.target[1].value && event.target[1].value != ""){
-                    params.random_state=parseInt(event.target[1].value)
-                }
+                
                 try{
-                    const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/logistic_regression/datasets_shapes`,{params})
-                    
-                    this.shapes = res.data
-                    this.shapesValue = true
+                    const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/svm/train_test_results`,{params})
+                    console.log(res.data)
+                    this.trainTestResource = res.data.trainTestImg
                     
                 } catch (e) {
                     console.log(e)
                 }
             },
-            async getPredict(){
+            async getSolution(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/logistic_regression/model_training_result`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/svm/show_solution`)
                     console.log(res.data)
-                    this.trainTestResource = res.data.confsMatrix
+                    this.solutionResource = res.data.solutionImg
+                } catch (e) {
+                    console.log(e)
+                }
+            },
+            async getConfMatrix(){
+                try{
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/svm/show_confusion_matrix`)
+                    console.log(res.data)
+                    this.confMatrixResource = res.data.confMatrix
                 } catch (e) {
                     console.log(e)
                 }
             },
             async getCalculation(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/logistic_regression/calculation`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/svm/calculation`)
                     
                     this.showAccuracy = res.data
                     this.showAccuracyValue = true
@@ -188,15 +184,14 @@
         data() {
             return {
                 file: "",
-                features: {},
-                featuresValue: false,
+                imgScatter: "",
                 showPreview: false,
                 showLaterSteps: false,
                 rmMissingValuesResult: null,
-                
-                shapes: {},
-                shapesValue: false,
+                scatterResource: "",
                 trainTestResource: "",
+                solutionResource: "",
+                confMatrixResource: "",
                 showAccuracy: {},
                 showAccuracyValue: false
             }

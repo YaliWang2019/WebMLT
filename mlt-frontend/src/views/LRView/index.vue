@@ -38,8 +38,11 @@
         </div>
 
         <em>Please select the scaling mode you want to use: </em>
+        <br />
         <em>Normalization: Y = (Y - np.min(Y)) / (np.max(Y) - np.min(Y))</em>
+        <br />
         <em>Standardization: Y = (Y - np.mean(Y)) / np.std(Y)</em>
+        <br />
         <form @submit.prevent="scaleMode">
             <select name="scaling" id="scale">
             <option value="normalization">Normalization</option>
@@ -54,7 +57,7 @@
         <button @click="() => showLaterSteps = true">Show Later Steps</button>
 
         <div v-if="showLaterSteps">
-            <h3 align=left>Phase 3: Data visualization</h3>
+            <h2 align=left>Phase 3: Data visualization</h2>
             <em>Please select the parameters you want to use: </em>
             <form @submit.prevent="dataPreprocess">
             
@@ -72,13 +75,13 @@
             <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' "/>
     
 
-            <h3 align=left>Phase 4: Model training</h3>
+            <h2 align=left>Phase 4: Model training</h2>
             <em>The prediction chart from your dataset: </em>
             <button @click="getPredict" v-if="predictionImg =='' ">Get Prediction</button>
             <br />
             <img :src="`data:image/png;base64,${predictionImg}`" v-if="predictionImg !=='' " />
 
-            <h3 align=left>Phase 5: Accuracy</h3>
+            <h2 align=left>Phase 5: Accuracy</h2>
             <em>The calculated errors from your dataset: </em>
             <button @click="getCalculation">Get Accuracy</button>
             <div v-if="showAccuracy">
@@ -105,7 +108,7 @@
                 const formData = new FormData()
                 formData.append('file', event.target[0].files[0])
                 try {
-                    const response = await axios.post('http://localhost:5001//datasets/linear_regression', formData, {
+                    const response = await axios.post('http://localhost:5001/datasets/linear_regression', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -145,7 +148,7 @@
                 try{
                     const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/linear_regression/train_test_datasets`,{params})
                     console.log(res.data)
-                    this.trainTestResource = res.data.trainTestestImg
+                    this.trainTestResource = res.data.trainTestImg
                     
                 } catch (e) {
                     console.log(e)

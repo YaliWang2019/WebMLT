@@ -15,10 +15,6 @@ from matplotlib.pyplot import figure
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 from sklearn.metrics import confusion_matrix
-from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
-from urllib.request import Request
-from flask_cors import CORS, cross_origin
-from werkzeug.utils import secure_filename
 from uuid import uuid4
 
 csv_file = {}
@@ -50,8 +46,8 @@ def lgr_scaling(id, scaleMode):
   df_new = df.dropna()
   X = df_new.iloc[:, 2:]
   y = df_new.iloc[:, 1]
-  # feature_names = df.columns
-  # labels = feature_names[1]
+  feature_names = df.columns
+  labels = feature_names[1]
 
   # Map labels from ['M', 'B'] to [0, 1] space
   y = np.where(y=='M', 0, 1)
@@ -62,53 +58,57 @@ def lgr_scaling(id, scaleMode):
     # normalization
     X = (X - np.min(X)) / (np.max(X) - np.min(X))
   # error catching logic required here
-  return (X, y)
+  return (X, y, feature_names, labels)
 
 # Phase 3: data visualization (whole data visualization, training data visualization, and testing data visualization, return charts)
 
-def lgr_scatterImg(id, scaleMode):
-  (X, y) = lgr_scaling(id, scaleMode)
-  plt.clf()
-  figure(figsize=(8, 6), dpi=80)
-  plt.scatter(X, y)
-  
-  plt.title("Visualize the full Dataset")
-  plt.xlabel('X')
-  plt.ylabel('y')
-
-  return (json.dumps({'lgrImgScatter':lgr_img_to_base64(plt)}), 200)
+def lgr_explore(id, scaleMode):
+  (_, _, feature_names, _) = lgr_scaling(id, scaleMode)
+  index_as_list = feature_names.tolist()
+  return (json.dumps({'Features: ': index_as_list}), 200)
 
 
   # Split the Dataset into Training and Test Set
-def lgr_spliting(id, test_size=0.2, random_state=0, scaleMode="normalization"):
-  (X, y) = lgr_scaling(id, scaleMode)
+def lgr_spliting(id, test_size, random_state, scaleMode="normalization"):
+  (X, y, _, _) = lgr_scaling(id, scaleMode)
+  if test_size is not None:
+    test_size = float(test_size)
+  else:
+    test_size = test_size
+  if random_state is not None:
+    random_state = int(random_state)
+  else:
+    random_state = random_state
   X_train_split, X_test_split, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
   return (X_train_split, X_test_split, y_train, y_test)
 
-def lgr_train_test_imgs(id, test_size, random_state):
-  (X_train_split, X_test_split, y_train, y_test) = lgr_spliting(id, float(test_size), int(random_state))
-  plt.clf()
-  figure(figsize=(15, 6), dpi=80)
-  plt.subplot(1, 2, 1) # row 1, col 2 index 1
-  plt.scatter(X_train_split, y_train)
-  # trainImg = img_to_base64(plt)
-  plt.title("Training Data")
-  plt.xlabel('X_train')
-  plt.ylabel('Y_train')
-
-  plt.subplot(1, 2, 2) # index 2
-  plt.scatter(X_test_split, y_test)
-  plt.title("Testing Data")
-  plt.xlabel('X_test')
-  plt.ylabel('Y_test')
-  plt.tight_layout()
-  trainTestestImg = lgr_img_to_base64(plt)
-
-  return (json.dumps({'trainTestestImg': trainTestestImg}), 200)
+def lgr_getShape(id, test_size, random_state, scaleMode="normalization"):
+  if test_size is not None:
+    test_size = float(test_size)
+  else:
+    test_size = test_size
+  if random_state is not None:
+    random_state = int(random_state)
+  else:
+    random_state = random_state
+  (X_train_split, X_test_split, y_train, y_test) = lgr_spliting(id, test_size=test_size, random_state=random_state, scaleMode=scaleMode)
+  XTrainShape = X_train_split.shape
+  XTestShape = X_test_split.shape
+  yTrainShape = y_train.shape
+  yTestShape = y_test.shape
+  return (json.dumps({'X_train shape: ': XTrainShape, 'X_test shape: ': XTestShape, 'y_train shape: ': yTrainShape, 'y_test shape: ': yTestShape}), 200)
 
 # Phase 4: model training
 # proving X_train, X_test, regressor, and Y_pred
 def lgr_pre_train(id, test_size, random_state):
+  if test_size is not None:
+    test_size = float(test_size)
+  else:
+    test_size = test_size
+  if random_state is not None:
+    random_state = int(random_state)
+  else:
+    random_state = random_state
   (X_train, X_test, y_train, y_test) = lgr_spliting(id, test_size, random_state)
   # Create a 2D array for training and test data to make it compatible with
   # scikit-learn (This is specific to scikit-learn because of the way it accepts input data)
@@ -122,58 +122,58 @@ def lgr_pre_train(id, test_size, random_state):
 
   return (X_train, X_test, y_train, y_test, y_pred)
 
-  # plt.tight_layout()
-def lgr_modelTraining(id, test_size, random_state):
-  (X_train, X_test, _, y_test, y_pred) = lgr_pre_train(id, test_size, random_state)
+def lgr_confusionMatrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
+  if normalize:
+    cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+  figure(figsize=(8, 8), dpi=80)
+  plt.imshow(cm, interpolation='nearest', cmap=cmap)
+  plt.title(title)
+  plt.colorbar()
+  tick_marks = np.arange(len(classes))
+  plt.xticks(tick_marks, classes, rotation=45)
+  plt.yticks(tick_marks, classes)
 
-  # Plot the predictions and the original test data
-  plt.clf()
-  figure(figsize=(8, 6), dpi=80)
-  plt.plot(X_train, y_test, 'go', label='True data', alpha=0.5)
-  plt.plot(X_test, y_pred, '--', label='Predictions', alpha=0.5)
-  
-  plt.title("Prediction")
-  
-  plt.legend(loc='best')
+  fmt = '.2f' if normalize else 'd'
+  thresh = cm.max() / 2.
+  for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+    plt.text(j, i, format(cm[i, j], fmt), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
-  return (json.dumps({'imgPrediction':lgr_img_to_base64(plt)}), 200)
+  plt.tight_layout()
+  plt.ylabel('True label')
+  plt.xlabel('Predicted label')
+  return (lgr_img_to_base64(plt))
+
+def lgr_makeConfusionMatrix(id, test_size, random_state):
+  if test_size is not None:
+    test_size = float(test_size)
+  else:
+    test_size = test_size
+  if random_state is not None:
+    random_state = int(random_state)
+  else:
+    random_state = random_state
+  (_, _, _, y_test, y_pred) = lgr_pre_train(id, test_size, random_state)
+  cm = confusion_matrix(y_test, y_pred)
+  cm_labels = ["malignant", "benign"]
+  confsMatrix = lgr_confusionMatrix(cm, cm_labels)  
+  return (json.dumps({'confsMatrix': confsMatrix}), 200)
 
 # Phase 5: accuracy
 def lgr_accuracy(id, test_size, random_state):
+  if test_size is not None:
+    test_size = float(test_size)
+  else:
+    test_size = test_size
+  if random_state is not None:
+    random_state = int(random_state)
+  else:
+    random_state = random_state
   (_, _, _, y_test, y_pred) = lgr_pre_train(id, test_size, random_state)
   modelAccuracy = str(metrics.accuracy_score(y_test, y_pred))
   modelPrecision = str(metrics.precision_score(y_test, y_pred))
   modelRecall = str(metrics.recall_score(y_test, y_pred))
   # Evaluate the quality of the training (Generate Evaluation Metrics)
   return (json.dumps({'Model Accuracy:': modelAccuracy, 'Model Precision:': modelPrecision, 'Model Recall:': modelRecall}), 200)
-
-def lgr_confusionMatrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45)
-    plt.yticks(tick_marks, classes)
-
-    fmt = '.2f' if normalize else 'd'
-    thresh = cm.max() / 2.
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, format(cm[i, j], fmt), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
-
-    plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
-    return (lgr_img_to_base64(plt))
-
-def lgr_makeConfusionMatrix(id, test_size, random_state):
-  (_, _, _, y_test, y_pred) = lgr_pre_train(id, float(test_size), int(random_state))
-  cm = confusion_matrix(y_test, y_pred)
-  cm_labels = ["malignant", "benign"]
-  matrix = lgr_confusionMatrix(cm, cm_labels)  
-  return (json.dumps({'confsMatrix': matrix}), 200)
 
 
 def lgr_img_to_base64(plt):

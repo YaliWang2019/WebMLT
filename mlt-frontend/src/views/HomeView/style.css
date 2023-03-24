@@ -207,6 +207,7 @@ h1 {
 }
 /* CSS */
 .button-1 {
+  width: 300px;
   font-size: 16px;
   font-weight: 200;
   letter-spacing: 1px;
