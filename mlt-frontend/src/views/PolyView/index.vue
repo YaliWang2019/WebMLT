@@ -148,7 +148,7 @@
                 try{
                     const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/polynomial_regression/train_test_results`,{params})
                     console.log(res.data)
-                    this.trainTestResource = res.data.trainTestestImg
+                    this.trainTestResource = res.data.trainTestImg
                     
                 } catch (e) {
                     console.log(e)

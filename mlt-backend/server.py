@@ -1,20 +1,12 @@
-from ctypes import Array
-import sys
-import subprocess
-import json
-import numpy as np
-import pandas as pd
 from linear_regression_chart import lr_fileUpload, lr_rmMissingvalues, lr_scatterImg, lr_train_test_imgs, lr_modelTraining, lr_accuracy
 from logistic_regression import lgr_fileUpload, lgr_rmMissingvalues, lgr_explore, lgr_getShape, lgr_makeConfusionMatrix, lgr_accuracy
 from polynomial_regression import poly_fileUpload, poly_rmMissingvalues, poly_scatterImg, poly_train_test_imgs, poly_modelTraining, poly_accuracy
 from k_means_clustering import km_fileUpload, km_rmMissingvalues, km_scatterImg, km_plot_cluster, km_estimate
 from svm import svm_fileUpload, svm_rmMissingvalues, svm_scatter_plot, svm_train_test_plot, svm_solution, svm_confusion_matrix, svm_evaluation
+from neural_network import nr_fileUpload, nr_rmMissingvalues, nr_explore, nr_getShape, nr_confusion_matrix_plot, nr_evaluate, nr_three_models
 
-from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
-from urllib.request import Request
-from flask import Flask, request, make_response, jsonify
-from flask_cors import CORS, cross_origin
-from werkzeug.utils import secure_filename
+from flask import Flask, request, make_response
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.debug = True
@@ -26,7 +18,6 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def lr_getUploadedFile():
     (data, res) = lr_fileUpload(request.files)
     return make_response(data, res)
-
 
 @app.route('/datasets/<id>/linear_regression/missing_values',methods=['GET'])
 def lr_removeMissingValues(id):
@@ -93,7 +84,6 @@ def lgr_calculations(id):
 def poly_getUploadedFile():
     (data, res) = poly_fileUpload(request.files)
     return make_response(data, res)
-
 
 @app.route('/datasets/<id>/polynomial_regression/missing_values',methods=['GET'])
 def poly_removeMissingValues(id):
@@ -191,7 +181,42 @@ def svm_calculations(id):
     results = svm_evaluation(id, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(results)
 #---------------------------------------------------------------------#
+#---------------------------------------------------------------------#
+# Neural Network
+@app.route('/datasets/neural_network',methods=['POST'])
+def nr_getUploadedFile():
+    (data, res) = nr_fileUpload(request.files)
+    return make_response(data, res)
 
+@app.route('/datasets/<id>/neural_network/missing_values',methods=['GET'])
+def nr_removeMissingValues(id):
+    rmResult = nr_rmMissingvalues(id)
+    return make_response(rmResult)
+
+@app.route('/datasets/<id>/neural_network/get_features', methods = ['GET'])
+def nr_show_features(id):
+    featuresResponse = nr_explore(id, request.args.get('scaleMode'))
+    return make_response(featuresResponse)
+
+@app.route('/datasets/<id>/neural_network/datasets_shapes', methods = ['GET'])
+def nr_getShapes(id):
+    shapes = nr_getShape(id, request.args.get('test_size'), request.args.get('scaleMode'))
+    return make_response(shapes)
+
+@app.route('/datasets/<id>/neural_network/model_training_result', methods = ['GET'])
+def nr_getMatrix(id):
+    confMatrixImg = nr_confusion_matrix_plot(id, request.args.get('test_size'), request.args.get('scaleMode'))
+    return make_response(confMatrixImg)
+
+@app.route('/datasets/<id>/neural_network/calculation', methods = ['GET'])
+def nr_calculations(id):
+    results = nr_evaluate(id, request.args.get('test_size'), request.args.get('scaleMode'))
+    return make_response(results)
+
+@app.route('/datasets/<id>/neural_network/three_models_calculations', methods = ['GET'])
+def nr_evaluate_three_models(id):
+    threeModelsResults = nr_three_models(id, request.args.get('test_size'), request.args.get('scaleMode'))
+    return make_response(threeModelsResults)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = 5001)

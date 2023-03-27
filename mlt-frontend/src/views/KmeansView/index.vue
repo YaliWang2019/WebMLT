@@ -97,7 +97,7 @@
     } from 'vue'
     import axios from "axios"
     export default defineComponent({
-        name: 'LRView',
+        name: 'KMeansView',
         methods: {
             async submitFile(event) {
                 console.log(event.target[0].files[0])

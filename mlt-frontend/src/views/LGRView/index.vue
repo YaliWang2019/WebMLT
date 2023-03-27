@@ -77,8 +77,8 @@
 
             <h3 align=left>Shapes of the split datasets: </h3>
             <div v-if="shapes">
-                <div v-for="i in shapes" v-bind:key="i">
-                    {{i}} {{shapes[i]}}
+                <div v-for="(value, index) in shapes" v-bind:key="index">
+                    {{index}} {{value}}
                 </div>
             </div>
     

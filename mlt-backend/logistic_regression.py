@@ -125,7 +125,7 @@ def lgr_pre_train(id, test_size, random_state):
 def lgr_confusionMatrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
   if normalize:
     cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-  figure(figsize=(8, 8), dpi=80)
+  figure(figsize=(10, 8), dpi=80)
   plt.imshow(cm, interpolation='nearest', cmap=cmap)
   plt.title(title)
   plt.colorbar()

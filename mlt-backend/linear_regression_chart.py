@@ -4,9 +4,7 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from tabulate import tabulate
 import numpy as np
-from flask import Flask, render_template, request, make_response, jsonify
 from io import BytesIO
 import base64
 from sklearn.model_selection import train_test_split
@@ -75,24 +73,28 @@ def lr_spliting(id, test_size=0.2, random_state=0, scaleMode="normalization"):
   return (X_train_split, X_test_split, Y_train, Y_test)
 
 def lr_train_test_imgs(id, test_size, random_state):
-  (X_train_split, X_test_split, Y_train, Y_test) = lr_spliting(id, float(test_size), int(random_state))
+  (X_train, X_test, Y_train, Y_test) = lr_spliting(id, float(test_size), int(random_state))
+  X_train = np.array(X_train)
+  Y_train = np.array(Y_train)
+  X_test = np.array(X_test)
+  Y_test = np.array(Y_test)
   plt.clf()
   figure(figsize=(15, 6), dpi=80)
   plt.subplot(1, 2, 1) # row 1, col 2 index 1
-  plt.scatter(X_train_split, Y_train)
+  plt.scatter(X_train, Y_train)
   plt.title("Training Data")
   plt.xlabel('X_train')
   plt.ylabel('Y_train')
 
   plt.subplot(1, 2, 2) # index 2
-  plt.scatter(X_test_split, Y_test)
+  plt.scatter(X_test, Y_test)
   plt.title("Testing Data")
   plt.xlabel('X_test')
   plt.ylabel('Y_test')
   plt.tight_layout()
   trainTestImg = lr_img_to_base64(plt)
 
-  return (json.dumps({'trainTestestImg': trainTestImg}), 200)
+  return (json.dumps({'trainTestImg': trainTestImg}), 200)
 
 # Phase 4: model training
 # proving X_train, X_test, regressor, and Y_pred

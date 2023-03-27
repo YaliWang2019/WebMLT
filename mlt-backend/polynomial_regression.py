@@ -104,9 +104,9 @@ def poly_train_test_imgs(id, test_size, random_state):
   plt.ylabel('Y_test')
 
   plt.tight_layout()
-  trainTestestImg = poly_img_to_base64(plt)
+  trainTestImg = poly_img_to_base64(plt)
 
-  return (json.dumps({'trainTestestImg': trainTestestImg}), 200)
+  return (json.dumps({'trainTestImg': trainTestImg}), 200)
 
 
 """# Initialize the Model"""

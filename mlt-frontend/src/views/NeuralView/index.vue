@@ -38,6 +38,11 @@
         </div>
 
         <em>Please select the scaling mode you want to use: </em>
+        <br />
+        <em>Normalization: Y = (Y - np.min(Y)) / (np.max(Y) - np.min(Y))</em>
+        <br />
+        <em>Standardization: Y = (Y - np.mean(Y)) / np.std(Y)</em>
+        <br />
         <form @submit.prevent="scaleMode">
             <select name="scaling" id="scale">
             <option value="normalization">Normalization</option>
@@ -47,8 +52,12 @@
             
         </form>
         
-        <h3 align=left>Scatter chart of your dataset: </h3>
-        <img :src="`data:image/png;base64,${scatterResource}`" v-if="scatterResource!=''"/>
+        <h3 align=left>Feature labels of your dataset: </h3>
+        <div v-if="features">
+            <div v-for="i in features" v-bind:key="i">
+                {{i}} {{features[i]}}
+            </div>
+        </div>
         <button @click="() => showLaterSteps = true">Show Later Steps</button>
 
         <div v-if="showLaterSteps">
@@ -60,28 +69,34 @@
             <input type="text" id="testSize" pattern="^[1-9][0-9]?$" />
             <em>% (Input percentage here.)</em>
             <br />
-            <em for="randomState">random_state = </em>
-            <input type="text" id="randomState" pattern="^[0-9]*$" />
-            <br />
             <input type="submit" value="Submit" />
             </form>
 
-            <h3 align=left>Scatter charts of your train and test datasets: </h3>
-            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' "/>
-    
+            <h3 align=left>Shapes of the split datasets: </h3>
+            <div v-if="shapes">
+                <div v-for="(value, index) in shapes" v-bind:key="index">
+                    {{index}} {{value}}
+                </div>
+            </div>
 
             <h3 align=left>Phase 4: Model training</h3>
             <em>The prediction chart from your dataset: </em>
-            <button @click="getPredict" v-if="predictionImg =='' ">Get Prediction</button>
+            <button @click="getPredict" v-if="trainTestResource =='' ">Get Prediction</button>
             <br />
-            <img :src="`data:image/png;base64,${predictionImg}`" v-if="predictionImg !=='' " />
+            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' " />
 
             <h3 align=left>Phase 5: Accuracy</h3>
-            <em>The calculated errors from your dataset: </em>
-            <button @click="getCalculation">Get Accuracy</button>
+            <em>The calculated errors from your created model: </em>
+            <button @click="getCalculation">Get Model Accuracy</button>
             <div v-if="showAccuracy">
-                <div v-for="i in showAccuracy" v-bind:key="i">
-                    {{i}} {{showAccuracy[i]}}
+                <div v-for="(value, index) in showAccuracy" v-bind:key="index">
+                    {{index}} {{value}}
+                </div>
+            </div>
+            <button @click="getThreeModelsCalculation">Get Three Models' Accuracies</button>
+            <div v-if="showThreeModelsAccuracy">
+                <div v-for="(value, index) in showThreeModelsAccuracy" v-bind:key="index">
+                    {{index}} {{value}}
                 </div>
             </div>
             <br />
@@ -96,14 +111,14 @@
     } from 'vue'
     import axios from "axios"
     export default defineComponent({
-        name: 'LRView',
+        name: 'NeuralView',
         methods: {
             async submitFile(event) {
                 console.log(event.target[0].files[0])
                 const formData = new FormData()
                 formData.append('file', event.target[0].files[0])
                 try {
-                    const response = await axios.post('http://localhost:5001/datasets/logistic_regression', formData, {
+                    const response = await axios.post('http://localhost:5001/datasets/neural_network', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -116,7 +131,7 @@
             },
             async getPreview(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/logistic_regression/missing_values`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/neural_network/missing_values`)
                     this.rmMissingValuesResult = res.data
                     this.showPreview = true
                 }catch(e){
@@ -125,9 +140,9 @@
             },
             async scaleMode(event){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/logistic_regression/scatter?scaleMode=${event.target[0].value}`)
-                    console.log(res.data)
-                    alert("CSV file uploaded successfully!")
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/neural_network/get_features?scaleMode=${event.target[0].value}`)
+                    this.features = res.data
+                    this.featuresValue = true
                     
                 } catch (e) {
                     console.log(e)
@@ -138,13 +153,10 @@
                 if(event.target[0].value && event.target[0].value != ""){
                     params.test_size=parseInt(event.target[0].value)*0.01
                 }
-                if(event.target[1].value && event.target[1].value != ""){
-                    params.random_state=parseInt(event.target[1].value)
-                }
                 try{
-                    const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/logistic_regression/train_test_results`,{params})
-                    console.log(res.data)
-                    this.trainTestResource = res.data.trainTestestImg
+                    const res=await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/neural_network/datasets_shapes`,{params})
+                    this.shapes = res.data
+                    this.shapesValue = true
                     
                 } catch (e) {
                     console.log(e)
@@ -152,19 +164,29 @@
             },
             async getPredict(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/logistic_regression/model_training_result`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/neural_network/model_training_result`)
                     console.log(res.data)
-                    this.predictionImg = res.data.imgPrediction
+                    this.trainTestResource = res.data.confsMatrix
                 } catch (e) {
                     console.log(e)
                 }
             },
             async getCalculation(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/logistic_regression/calculation`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/neural_network/calculation`)
                     
                     this.showAccuracy = res.data
                     this.showAccuracyValue = true
+                }catch(e){
+                    console.log(e)
+                }
+            },
+            async getThreeModelsCalculation(){
+                try{
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/neural_network/three_models_calculations`)
+                    
+                    this.showThreeModelsAccuracy = res.data
+                    this.showThreeModelsAccuracyValue = true
                 }catch(e){
                     console.log(e)
                 }
@@ -174,15 +196,19 @@
         data() {
             return {
                 file: "",
-                imgScatter: "",
                 showPreview: false,
+                features: {},
+                featuresValue: false,
                 showLaterSteps: false,
                 rmMissingValuesResult: null,
-                scatterResource: "",
+                shapes: {},
+                shapesValue: false,
+                
                 trainTestResource: "",
-                predictionImg: "",
                 showAccuracy: {},
-                showAccuracyValue: false
+                showAccuracyValue: false,
+                showThreeModelsAccuracy: {},
+                showThreeModelsAccuracyValue: false,
             }
         },
     })
