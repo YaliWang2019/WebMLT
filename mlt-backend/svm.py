@@ -203,6 +203,7 @@ def svm_confusion_matrix_method(cm, classes, normalize=False, title='Confusion m
   if normalize:
     cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
   plt.clf()
+  figure(figsize=(10, 8), dpi=80)
   plt.imshow(cm, interpolation='nearest', cmap=cmap)
   plt.title(title)
   plt.colorbar()

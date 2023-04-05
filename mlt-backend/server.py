@@ -1,9 +1,9 @@
 from linear_regression_chart import lr_fileUpload, lr_rmMissingvalues, lr_scatterImg, lr_train_test_imgs, lr_modelTraining, lr_accuracy
 from logistic_regression import lgr_fileUpload, lgr_rmMissingvalues, lgr_explore, lgr_getShape, lgr_makeConfusionMatrix, lgr_accuracy
 from polynomial_regression import poly_fileUpload, poly_rmMissingvalues, poly_scatterImg, poly_train_test_imgs, poly_modelTraining, poly_accuracy
-from k_means_clustering import km_fileUpload, km_rmMissingvalues, km_scatterImg, km_plot_cluster, km_estimate
+from k_means_clustering import km_fileUpload, km_rmMissingvalues, km_scatterImg, km_plot_cluster, km_estimate, km_accuracy
 from svm import svm_fileUpload, svm_rmMissingvalues, svm_scatter_plot, svm_train_test_plot, svm_solution, svm_confusion_matrix, svm_evaluation
-from neural_network import nr_fileUpload, nr_rmMissingvalues, nr_explore, nr_getShape, nr_confusion_matrix_plot, nr_evaluate, nr_three_models
+from neural_network import nr_fileUpload, nr_rmMissingvalues, nr_explore, nr_getShape, nr_confusion_matrix_plot, nr_evaluate, nr_train_data_errors, nr_test_data_errors
 
 from flask import Flask, request, make_response
 from flask_cors import CORS
@@ -137,10 +137,10 @@ def km_prediction(id):
     pre_chart = km_estimate(id, request.args.get('random_state'), request.args.get('scaleMode'))
     return make_response(pre_chart)
 
-# @app.route('/datasets/<id>/k_means_clustering/calculation', methods = ['GET'])
-#def km_calculations(id):
-#    results = km_accuracy(id, request.args.get('test_size'), request.args.get('random_state'))
-#    return make_response(results)
+@app.route('/datasets/<id>/k_means_clustering/calculation', methods = ['GET'])
+def km_calculations(id):
+    results = km_accuracy(id, request.args.get('random_state'), request.args.get('scaleMode'))
+    return make_response(results)
 
 #---------------------------------------------------------------------#
 
@@ -213,10 +213,15 @@ def nr_calculations(id):
     results = nr_evaluate(id, request.args.get('test_size'), request.args.get('scaleMode'))
     return make_response(results)
 
-@app.route('/datasets/<id>/neural_network/three_models_calculations', methods = ['GET'])
-def nr_evaluate_three_models(id):
-    threeModelsResults = nr_three_models(id, request.args.get('test_size'), request.args.get('scaleMode'))
-    return make_response(threeModelsResults)
+@app.route('/datasets/<id>/neural_network/get_train_data_errors', methods = ['GET'])
+def nr_train_data_errors_method(id):
+    trainErrors = nr_train_data_errors(id, request.args.get('test_size'), request.args.get('scaleMode'))
+    return make_response(trainErrors)
+
+@app.route('/datasets/<id>/neural_network/get_test_data_errors', methods = ['GET'])
+def nr_test_data_errors_method(id):
+    testErrors = nr_test_data_errors(id, request.args.get('test_size'), request.args.get('scaleMode'))
+    return make_response(testErrors)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port = 5001)

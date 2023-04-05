@@ -72,7 +72,7 @@ def km_scatterImg(id, scaleMode):
   return (json.dumps({'imgScatter': imgScatter}), 200)
 
 # Phase 4: model training
-def km_plot_cluster(id, random_state, scaleMode):
+def km_generate_model(id, random_state, scaleMode):
   (X, _) = km_scaling(id, scaleMode)
   if random_state is not None:
     random_state = int(random_state)
@@ -84,6 +84,11 @@ def km_plot_cluster(id, random_state, scaleMode):
     tol=1e-04, random_state=random_state
   )
   y_km = km.fit_predict(X)
+  return (km, y_km)
+
+def km_plot_cluster(id, random_state, scaleMode):
+  (km, y_km) = km_generate_model(id, random_state, scaleMode)
+  (X, _) = km_scaling(id, scaleMode)
   plt.clf()
   # plot the 3 clusters
   plt.scatter(
@@ -138,13 +143,14 @@ def km_estimate(id, random_state, scaleMode):
 
 
 # Phase 5: accuracy
-# def km_accuracy(id, test_size, random_state):
-#  (_, _, _, y_test, y_pred) = km_pre_train(id, test_size, random_state)
-#  modelAccuracy = str(metrics.accuracy_score(y_test, y_pred))
-#  modelPrecision = str(metrics.precision_score(y_test, y_pred))
-#  modelRecall = str(metrics.recall_score(y_test, y_pred))
-# Evaluate the quality of the training (Generate Evaluation Metrics)
-#  return (json.dumps({'Model Accuracy:': modelAccuracy, 'Model Precision:': modelPrecision, 'Model Recall:': modelRecall}), 200)
+def km_accuracy(id, random_state, scaleMode):
+  (y_km, _) = km_generate_model(id, random_state, scaleMode)
+  # Within-Cluster-Sum-of-Squares (WCSS)
+  # Measures the sum of squared distances between each point and the
+  # centroid of its assigned cluster. Lower values of WCSS indicate better clustering performance
+  wcss = str(y_km.inertia_)
+
+  return (json.dumps({'Within-Cluster-Sum-of-Squares (WCSS):': wcss}), 200)
 
 def km_img_to_base64(plt):
   chart = BytesIO()

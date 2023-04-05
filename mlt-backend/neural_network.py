@@ -162,11 +162,11 @@ def nr_evaluate(id, test_size, scaleMode):
 # Extract a subset from train and test datasets to showcase the effects of under and overfitting using models of different sizes
 def nr_three_models(id, test_size, scaleMode):
   (X_train, X_test, y_train, y_test) = nr_spliting(id, test_size, scaleMode)
-  X_train = X_train[:20, :]
-  y_train = y_train[:20, ]
+  #X_train = X_train[:20, :]
+  #y_train = y_train[:20]
 
-  X_test = X_test[:20, :]
-  y_test = y_test[:20, ]
+  #X_test = X_test[:20, :]
+  #y_test = y_test[:20]
 
   # Less complex model - Less number of neurons
   # underfit model
@@ -187,10 +187,14 @@ def nr_three_models(id, test_size, scaleMode):
   y_pred_underfit = mlp_underfit.predict(X_test)
   y_pred_overfit = mlp_overfit.predict(X_test)
   y_pred_bestfit = mlp_bestfit.predict(X_test)
+  return (y_pred_underfit, y_pred_overfit, y_pred_bestfit, mlp_underfit, mlp_overfit, mlp_bestfit)
 
+def nr_train_data_errors(id, test_size, scaleMode):
   # Evaluate these models on Test data
 
   # Errors on Train data
+  (X_train, _, y_train, _) = nr_spliting(id, test_size, scaleMode)
+  (_, _, _, mlp_underfit, mlp_overfit, mlp_bestfit) = nr_three_models(id, test_size, scaleMode)
   train_mean_ab_err_best = str(metrics.mean_absolute_error(y_train, mlp_bestfit.predict(X_train)))
   train_mean_ab_err_underfit = str(metrics.mean_absolute_error(y_train, mlp_underfit.predict(X_train)))
   train_mean_ab_err_overfit = str(metrics.mean_absolute_error(y_train, mlp_overfit.predict(X_train)))
@@ -202,9 +206,21 @@ def nr_three_models(id, test_size, scaleMode):
   train_rt_mean_squared_err_best = str(np.sqrt(metrics.mean_squared_error(y_train, mlp_bestfit.predict(X_train))))
   train_rt_mean_squared_err_underfit = str(np.sqrt(metrics.mean_squared_error(y_train, mlp_underfit.predict(X_train))))
   train_rt_mean_squared_err_overfit = str(np.sqrt(metrics.mean_squared_error(y_train, mlp_overfit.predict(X_train))))
+  return (json.dumps({
+    'Mean Absolute Error - Best fit model: ': train_mean_ab_err_best, 
+    'Mean Absolute Error - Underfit model: ': train_mean_ab_err_underfit, 
+    'Mean Absolute Error - Overfit model:': train_mean_ab_err_overfit,
+    'Mean Squared Error - Best fit model: ': train_mean_squared_err_best,
+    'Mean Squared Error - Underfit model: ': train_mean_squared_err_underfit, 
+    'Mean Squared Error - Overfit model: ': train_mean_squared_err_overfit,
+    'Root Mean Squared Error - Best fit model: ': train_rt_mean_squared_err_best, 
+    'Root Mean Squared Error - Underfit model: ': train_rt_mean_squared_err_underfit, 
+    'Root Mean Squared Error - Overfit model: ': train_rt_mean_squared_err_overfit}), 200)
 
-
+def nr_test_data_errors(id, test_size, scaleMode):
   #Errors on Test data
+  (_, _, _, y_test) = nr_spliting(id, test_size, scaleMode)
+  (y_pred_underfit, y_pred_overfit, y_pred_bestfit, _, _, _) = nr_three_models(id, test_size, scaleMode)
   test_mean_ab_err_best = str(metrics.mean_absolute_error(y_test, y_pred_bestfit))
   test_mean_ab_err_underfit = str(metrics.mean_absolute_error(y_test, y_pred_underfit))
   test_mean_ab_err_overfit = str(metrics.mean_absolute_error(y_test, y_pred_overfit))
@@ -217,12 +233,16 @@ def nr_three_models(id, test_size, scaleMode):
   test_rt_mean_squared_err_underfit = str(np.sqrt(metrics.mean_squared_error(y_test, y_pred_underfit)))
   test_rt_mean_squared_err_overfit = str(np.sqrt(metrics.mean_squared_error(y_test, y_pred_overfit)))
 
-  return (json.dumps({'Errors on Train data: \nMean Absolute Error - Best fit model: ': train_mean_ab_err_best, 'Mean Absolute Error - Underfit model: ': train_mean_ab_err_underfit, 'Mean Absolute Error - Overfit model:': train_mean_ab_err_overfit,
-                      'Mean Squared Error - Best fit model: ': train_mean_squared_err_best, 'Mean Squared Error - Underfit model: ': train_mean_squared_err_underfit, 'Mean Squared Error - Overfit model: ': train_mean_squared_err_overfit,
-                      'Root Mean Squared Error - Best fit model: ': train_rt_mean_squared_err_best, 'Root Mean Squared Error - Underfit model: ': train_rt_mean_squared_err_underfit, 'Root Mean Squared Error - Overfit model: ': train_rt_mean_squared_err_overfit,
-                      'Errors on Test data: \nMean Absolute Error - Best fit model: ': test_mean_ab_err_best, 'Mean Absolute Error - Underfit model: ': test_mean_ab_err_underfit, 'Mean Absolute Error - Overfit model:': test_mean_ab_err_overfit,
-                      'Mean Squared Error - Best fit model: ': test_mean_squared_err_best, 'Mean Squared Error - Underfit model: ': test_mean_squared_err_underfit, 'Mean Squared Error - Overfit model: ': test_mean_squared_err_overfit,
-                      'Root Mean Squared Error - Best fit model: ': test_rt_mean_squared_err_best, 'Root Mean Squared Error - Underfit model: ': test_rt_mean_squared_err_underfit, 'Root Mean Squared Error - Overfit model: ': test_rt_mean_squared_err_overfit,}), 200)
+  return (json.dumps({
+    'Mean Absolute Error - Best fit model: ': test_mean_ab_err_best, 
+    'Mean Absolute Error - Underfit model: ': test_mean_ab_err_underfit, 
+    'Mean Absolute Error - Overfit model:': test_mean_ab_err_overfit,
+    'Mean Squared Error - Best fit model: ': test_mean_squared_err_best, 
+    'Mean Squared Error - Underfit model: ': test_mean_squared_err_underfit, 
+    'Mean Squared Error - Overfit model: ': test_mean_squared_err_overfit,
+    'Root Mean Squared Error - Best fit model: ': test_rt_mean_squared_err_best, 
+    'Root Mean Squared Error - Underfit model: ': test_rt_mean_squared_err_underfit, 
+    'Root Mean Squared Error - Overfit model: ': test_rt_mean_squared_err_overfit,}), 200)
 
 """## Training errors 
 Underfit model > Best fit model > Overfit model

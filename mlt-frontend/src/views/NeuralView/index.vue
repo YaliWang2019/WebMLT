@@ -87,15 +87,24 @@
 
             <h3 align=left>Phase 5: Accuracy</h3>
             <em>The calculated errors from your created model: </em>
+            <br />
             <button @click="getCalculation">Get Model Accuracy</button>
             <div v-if="showAccuracy">
                 <div v-for="(value, index) in showAccuracy" v-bind:key="index">
                     {{index}} {{value}}
                 </div>
             </div>
-            <button @click="getThreeModelsCalculation">Get Three Models' Accuracies</button>
-            <div v-if="showThreeModelsAccuracy">
-                <div v-for="(value, index) in showThreeModelsAccuracy" v-bind:key="index">
+            <br />
+            <button @click="getTrainErrors">Get Errors on Train Data</button>
+            <div v-if="showTrainErrors">
+                <div v-for="(value, index) in showTrainErrors" v-bind:key="index">
+                    {{index}} {{value}}
+                </div>
+            </div>
+            <br />
+            <button @click="getTestErrors">Get Errors on Test Data</button>
+            <div v-if="showTestErrors">
+                <div v-for="(value, index) in showTestErrors" v-bind:key="index">
                     {{index}} {{value}}
                 </div>
             </div>
@@ -181,12 +190,22 @@
                     console.log(e)
                 }
             },
-            async getThreeModelsCalculation(){
+            async getTrainErrors(){
                 try{
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/neural_network/three_models_calculations`)
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/neural_network/get_train_data_errors`)
                     
-                    this.showThreeModelsAccuracy = res.data
-                    this.showThreeModelsAccuracyValue = true
+                    this.showTrainErrors = res.data
+                    this.showTrainErrorsValue = true
+                }catch(e){
+                    console.log(e)
+                }
+            },
+            async getTestErrors(){
+                try{
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem('id')}/neural_network/get_test_data_errors`)
+                    
+                    this.showTestErrors = res.data
+                    this.showTestErrorsValue = true
                 }catch(e){
                     console.log(e)
                 }
@@ -207,8 +226,10 @@
                 trainTestResource: "",
                 showAccuracy: {},
                 showAccuracyValue: false,
-                showThreeModelsAccuracy: {},
-                showThreeModelsAccuracyValue: false,
+                showTrainErrors: {},
+                showTrainErrorsValue: false,
+                showTestErrors: {},
+                showTestErrorsValue: false,
             }
         },
     })
