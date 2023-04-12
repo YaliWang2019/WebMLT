@@ -1,11 +1,11 @@
-from linear_regression_chart import lr_fileUpload, lr_rmMissingvalues, lr_scatterImg, lr_train_test_imgs, lr_modelTraining, lr_accuracy
-from logistic_regression import lgr_fileUpload, lgr_rmMissingvalues, lgr_explore, lgr_getShape, lgr_makeConfusionMatrix, lgr_accuracy
-from polynomial_regression import poly_fileUpload, poly_rmMissingvalues, poly_scatterImg, poly_train_test_imgs, poly_modelTraining, poly_accuracy
-from k_means_clustering import km_fileUpload, km_rmMissingvalues, km_scatterImg, km_plot_cluster, km_estimate, km_accuracy
-from svm import svm_fileUpload, svm_rmMissingvalues, svm_scatter_plot, svm_train_test_plot, svm_solution, svm_confusion_matrix, svm_evaluation
-from neural_network import nr_fileUpload, nr_rmMissingvalues, nr_explore, nr_getShape, nr_confusion_matrix_plot, nr_evaluate, nr_train_data_errors, nr_test_data_errors
+from linear_regression_chart import *
+from logistic_regression import *
+from polynomial_regression import *
+from k_means_clustering import *
+from svm import *
+from neural_network import *
 
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -24,9 +24,9 @@ def lr_removeMissingValues(id):
     rmResult = lr_rmMissingvalues(id)
     return make_response(rmResult)
 
-@app.route('/datasets/<id>/linear_regression/scatter', methods = ['GET'])
+@app.route('/datasets/<id>/linear_regression/scatter',methods=['GET'])
 def lr_make_scatter(id):
-    scatterChart = lr_scatterImg(id, request.args.get('scaleMode'))
+    scatterChart = lr_scatterImg(id, request.args.get('x_index'), request.args.get('y_index'), request.args.get('scaleMode'))
     return make_response(scatterChart)
 
 @app.route('/datasets/<id>/linear_regression/train_test_datasets', methods = ['GET'])

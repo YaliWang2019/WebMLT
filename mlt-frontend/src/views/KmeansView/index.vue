@@ -12,11 +12,23 @@
             <br />
         </div>
         <h2 align=left>Phase 2: Data preprocessing</h2>
-        <h3 align=left>This phase removes missing values from your dataset and scales your data.</h3>
-        <h3 align=left>The preview of your dataset after removing missing values: </h3>
-        
+        <h3 align=left>This phase removes missing values from your dataset and scales your data. </h3>
+        <h3 align=left>(1). Removing missing values: </h3>
+        <em>The preview of your dataset after removing missing values: </em>
+        <br />
+        <em>Please input the number (an integer > 0) of rows you would like for your dataset preview. </em>
+        <br />
+        <em>Remember to click the "submit" button before clicking the "Get Preview" button.</em>
+        <br />
+
+        <form @submit.prevent="getNumber">
+            <input type="number" v-model="numRows">
+            <button type="submit">Submit</button>
+        </form>
+        <br />
         <button @click="getPreview">Get Preview</button>
         <br />
+        
         <div v-if="showPreview">
             <table>
                 <thead>
@@ -27,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="index in [0, 1, 2, 3, 4]" :key="index">
+                    <tr v-for="index in Array.from({length: numRows}, (_, i) => i)" :key="index">
                         <td v-for="(_,row) in rmMissingValuesResult" :key="row">
                             {{rmMissingValuesResult[row][index]}}
                         </td>
@@ -54,40 +66,35 @@
         
         <h3 align=left>Scatter chart of your dataset: </h3>
         <img :src="`data:image/png;base64,${scatterResource}`" v-if="scatterResource!=''"/>
-        <button @click="() => showLaterSteps = true">Show Later Steps</button>
 
-        <div v-if="showLaterSteps">
-            <h3 align=left>Phase 3: Data visualization</h3>
-            <em>Please select the parameters you want to use: </em>
-            <form @submit.prevent="dataPreprocess">
+        <h3 align=left>Phase 3: Data visualization</h3>
+        <em>Please select the parameters you want to use: </em>
+        <form @submit.prevent="dataPreprocess">
             
-            <em for="randomState">random_state = </em>
-            <input type="text" id="randomState" pattern="^[0-9]*$" />
-            <br />
-            <input type="submit" value="Submit" />
-            </form>
+        <em for="randomState">random_state = </em>
+        <input type="text" id="randomState" pattern="^[0-9]*$" />
+        <br />
+        <input type="submit" value="Submit" />
+        </form>
 
-            <h3 align=left>Scatter charts of your train and test datasets: </h3>
-            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' "/>
-    
+        <h3 align=left>Scatter charts of your train and test datasets: </h3>
+        <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' "/>
 
-            <h3 align=left>Phase 4: Model training</h3>
-            <em>The prediction chart from your dataset: </em>
-            <button @click="getPredict" v-if="predictionImg =='' ">Get Prediction</button>
-            <br />
-            <img :src="`data:image/png;base64,${predictionImg}`" v-if="predictionImg !=='' " />
+        <h3 align=left>Phase 4: Model training</h3>
+        <em>The prediction chart from your dataset: </em>
+        <button @click="getPredict" v-if="predictionImg =='' ">Get Prediction</button>
+        <br />
+        <img :src="`data:image/png;base64,${predictionImg}`" v-if="predictionImg !=='' " />
 
-            <h3 align=left>Phase 5: Accuracy</h3>
-            <em>The calculated errors from your dataset: </em>
-            <button @click="getCalculation">Get Accuracy</button>
-            <div v-if="showAccuracy">
-                <div v-for="(value, index) in showAccuracy" v-bind:key="index">
-                    {{index}} {{value}}
-                </div>
+        <h3 align=left>Phase 5: Accuracy</h3>
+        <em>The calculated errors from your dataset: </em>
+        <button @click="getCalculation">Get Accuracy</button>
+        <div v-if="showAccuracy">
+            <div v-for="(value, index) in showAccuracy" v-bind:key="index">
+                {{index}} {{value}}
             </div>
-            <br />
-            
         </div>
+        <br />
     </div>
 </template>
 
@@ -114,6 +121,10 @@
                 } catch (e) {
                     console.log(e)
                 }
+            },
+            getNumber() {
+                alert("Number of rows get!")
+                console.log(this.number);
             },
             async getPreview(){
                 try{
@@ -172,9 +183,10 @@
         data() {
             return {
                 file: "",
+                numRows: 0,
                 imgScatter: "",
                 showPreview: false,
-                showLaterSteps: false,
+                
                 rmMissingValuesResult: null,
                 scatterResource: "",
                 trainTestResource: "",

@@ -4,6 +4,7 @@
         <br />
         <h2 align=left>Phase 1: File upload </h2>
         <div>
+            <h3 align = left>First, please upload your dataset for training. </h3>
             <em>Please upload a csv file.</em>
             <form @submit.prevent="submitFile">
                 <input type="file" name="file" />
@@ -12,11 +13,23 @@
             <br />
         </div>
         <h2 align=left>Phase 2: Data preprocessing</h2>
-        <h3 align=left>This phase removes missing values from your dataset and scales your data.</h3>
-        <h3 align=left>The preview of your dataset after removing missing values: </h3>
-        
+        <h3 align=left>This phase removes missing values from your dataset and scales your data. </h3>
+        <h3 align=left>(1). Removing missing values: </h3>
+        <em>The preview of your dataset after removing missing values: </em>
+        <br />
+        <em>Please input the number (an integer > 0) of rows you would like for your dataset preview. </em>
+        <br />
+        <em>Remember to click the "submit" button before clicking the "Get Preview" button.</em>
+        <br />
+
+        <form @submit.prevent="getNumber">
+            <input type="number" v-model="numRows">
+            <button type="submit">Submit</button>
+        </form>
+        <br />
         <button @click="getPreview">Get Preview</button>
         <br />
+        
         <div v-if="showPreview">
             <table>
                 <thead>
@@ -27,7 +40,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="index in [0, 1, 2, 3, 4]" :key="index">
+                    <tr v-for="index in Array.from({length: numRows}, (_, i) => i)" :key="index">
                         <td v-for="(_,row) in rmMissingValuesResult" :key="row">
                             {{rmMissingValuesResult[row][index]}}
                         </td>
@@ -37,6 +50,18 @@
             
         </div>
 
+        <br />
+        <h3 align=left>(2). Scaling the dataset: </h3>
+        <p style="width: 80%;">Scaling is the process of transforming the values of input data to a similar scale or range. This is often done in 
+            machine learning models to improve the algorithm's performance and ensure that no input feature has an undue 
+            influence on the results.</p>
+        <p style="width: 80%;">In many machine learning models, such as linear regression or k-nearest neighbors, the scale of input features can 
+            significantly impact the results. For example, if one feature has values much larger than the other, it may dominate 
+            the model and cause it to perform poorly. Scaling can help to mitigate this issue by bringing all features to a similar range.</p>
+        <p style="width: 80%;">Common methods for scaling data include standardization and normalization. Standardization scales the data with a 
+            mean of 0 and a standard deviation of 1, while normalization scales the data to a range between 0 and 1. 
+            Other methods, such as min-max scaling or log transformation, may be used depending on the specific requirements of the model.</p>
+        <br />
         <em>Please select the scaling mode you want to use: </em>
         <br />
         <em>Normalization: Y = (Y - np.min(Y)) / (np.max(Y) - np.min(Y))</em>
@@ -58,48 +83,43 @@
                 {{i}} {{features[i]}}
             </div>
         </div>
-        <button @click="() => showLaterSteps = true">Show Later Steps</button>
 
-        <div v-if="showLaterSteps">
-            <h2 align=left>Phase 3: Data visualization</h2>
-            <em>Please select the parameters you want to use: </em>
-            <form @submit.prevent="dataPreprocess">
+        <h2 align=left>Phase 3: Data visualization</h2>
+        <em>Please select the parameters you want to use: </em>
+        <form @submit.prevent="dataPreprocess">
             
-            <em for="testSize">test_size = </em>
-            <input type="text" id="testSize" pattern="^[1-9][0-9]?$" />
-            <em>% (Input percentage here.)</em>
-            <br />
-            <em for="randomState">random_state = </em>
-            <input type="text" id="randomState" pattern="^[0-9]*$" />
-            <br />
-            <input type="submit" value="Submit" />
-            </form>
+        <em for="testSize">test_size = </em>
+        <input type="text" id="testSize" pattern="^[1-9][0-9]?$" />
+        <em>% (Input percentage here.)</em>
+        <br />
+        <em for="randomState">random_state = </em>
+        <input type="text" id="randomState" pattern="^[0-9]*$" />
+        <br />
+        <input type="submit" value="Submit" />
+        </form>
 
-            <h3 align=left>Shapes of the split datasets: </h3>
-            <div v-if="shapes">
-                <div v-for="(value, index) in shapes" v-bind:key="index">
-                    {{index}} {{value}}
-                </div>
+        <h3 align=left>Shapes of the split datasets: </h3>
+        <div v-if="shapes">
+            <div v-for="(value, index) in shapes" v-bind:key="index">
+                {{index}} {{value}}
             </div>
-    
-
-            <h2 align=left>Phase 4: Model training</h2>
-            <em>The prediction chart from your dataset: </em>
-            <button @click="getPredict" v-if="trainTestResource =='' ">Get Predicted Confusion Matrix</button>
-            <br />
-            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' " />
-
-            <h2 align=left>Phase 5: Accuracy</h2>
-            <em>The calculated errors from your dataset: </em>
-            <button @click="getCalculation">Get Accuracy</button>
-            <div v-if="showAccuracy">
-                <div v-for="(value, index) in showAccuracy" v-bind:key="index">
-                    {{index}} {{value}}
-                </div>
-            </div>
-            <br />
-            
         </div>
+    
+        <h2 align=left>Phase 4: Model training</h2>
+        <em>The prediction chart from your dataset: </em>
+        <button @click="getPredict" v-if="trainTestResource =='' ">Get Predicted Confusion Matrix</button>
+        <br />
+        <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' " />
+
+        <h2 align=left>Phase 5: Accuracy</h2>
+        <em>The calculated errors from your dataset: </em>
+        <button @click="getCalculation">Get Accuracy</button>
+        <div v-if="showAccuracy">
+            <div v-for="(value, index) in showAccuracy" v-bind:key="index">
+                {{index}} {{value}}
+            </div>
+        </div>
+        <br />
     </div>
 </template>
 
@@ -126,6 +146,10 @@
                 } catch (e) {
                     console.log(e)
                 }
+            },
+            getNumber() {
+                alert("Number of rows get!")
+                console.log(this.number);
             },
             async getPreview(){
                 try{
@@ -188,10 +212,10 @@
         data() {
             return {
                 file: "",
+                numRows: 0,
                 features: {},
                 featuresValue: false,
                 showPreview: false,
-                showLaterSteps: false,
                 rmMissingValuesResult: null,
                 
                 shapes: {},

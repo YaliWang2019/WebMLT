@@ -6,14 +6,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from tabulate import tabulate
 import numpy as np
-from flask import Flask, render_template, request, make_response, jsonify
 from io import BytesIO
 import base64
-import itertools
 from sklearn.model_selection import train_test_split
 from matplotlib.pyplot import figure
 from sklearn.cluster import KMeans
-from sklearn import metrics
 from sklearn.metrics import confusion_matrix
 from uuid import uuid4
 
@@ -38,8 +35,7 @@ def km_fileUpload(files):
 def km_rmMissingvalues(id):
   df = csv_file[id]
   df_new = df.dropna()
-  df_preview = df_new[0:5]
-  return ((df_preview.to_json()), 200)
+  return ((df_new.to_json()), 200)
 
 def km_scaling(id, scaleMode):
   df = csv_file[id]

@@ -4,9 +4,7 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from tabulate import tabulate
 import numpy as np
-from flask import Flask, render_template, request, make_response, jsonify
 from io import BytesIO
 import base64
 import itertools
@@ -38,8 +36,7 @@ def lgr_fileUpload(files):
 def lgr_rmMissingvalues(id):
   df = csv_file[id]
   df_new = df.dropna()
-  df_preview = df_new[0:5]
-  return ((df_preview.to_json()), 200)
+  return ((df_new.to_json()), 200)
 
 def lgr_scaling(id, scaleMode):
   df = csv_file[id]

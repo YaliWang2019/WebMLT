@@ -12,11 +12,23 @@
             <br />
         </div>
         <h2 align=left>Phase 2: Data preprocessing</h2>
-        <h3 align=left>This phase removes missing values from your dataset and scales your data.</h3>
-        <h3 align=left>The preview of your dataset after removing missing values: </h3>
-        
+        <h3 align=left>This phase removes missing values from your dataset and scales your data. </h3>
+        <h3 align=left>(1). Removing missing values: </h3>
+        <em>The preview of your dataset after removing missing values: </em>
+        <br />
+        <em>Please input the number (an integer > 0) of rows you would like for your dataset preview. </em>
+        <br />
+        <em>Remember to click the "submit" button before clicking the "Get Preview" button.</em>
+        <br />
+
+        <form @submit.prevent="getNumber">
+            <input type="number" v-model="numRows">
+            <button type="submit">Submit</button>
+        </form>
+        <br />
         <button @click="getPreview">Get Preview</button>
         <br />
+        
         <div v-if="showPreview">
             <table>
                 <thead>
@@ -27,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="index in [0, 1, 2, 3, 4]" :key="index">
+                    <tr v-for="index in Array.from({length: numRows}, (_, i) => i)" :key="index">
                         <td v-for="(_,row) in rmMissingValuesResult" :key="row">
                             {{rmMissingValuesResult[row][index]}}
                         </td>
@@ -58,59 +70,55 @@
                 {{i}} {{features[i]}}
             </div>
         </div>
-        <button @click="() => showLaterSteps = true">Show Later Steps</button>
-
-        <div v-if="showLaterSteps">
-            <h3 align=left>Phase 3: Data visualization</h3>
-            <em>Please select the parameters you want to use: </em>
-            <form @submit.prevent="dataPreprocess">
+        
+        <h3 align=left>Phase 3: Data visualization</h3>
+        <em>Please select the parameters you want to use: </em>
+        <form @submit.prevent="dataPreprocess">
             
-            <em for="testSize">test_size = </em>
-            <input type="text" id="testSize" pattern="^[1-9][0-9]?$" />
-            <em>% (Input percentage here.)</em>
-            <br />
-            <input type="submit" value="Submit" />
-            </form>
+        <em for="testSize">test_size = </em>
+        <input type="text" id="testSize" pattern="^[1-9][0-9]?$" />
+        <em>% (Input percentage here.)</em>
+        <br />
+        <input type="submit" value="Submit" />
+        </form>
 
-            <h3 align=left>Shapes of the split datasets: </h3>
-            <div v-if="shapes">
-                <div v-for="(value, index) in shapes" v-bind:key="index">
-                    {{index}} {{value}}
-                </div>
+        <h3 align=left>Shapes of the split datasets: </h3>
+        <div v-if="shapes">
+            <div v-for="(value, index) in shapes" v-bind:key="index">
+                {{index}} {{value}}
             </div>
-
-            <h3 align=left>Phase 4: Model training</h3>
-            <em>The prediction chart from your dataset: </em>
-            <button @click="getPredict" v-if="trainTestResource =='' ">Get Prediction</button>
-            <br />
-            <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' " />
-
-            <h3 align=left>Phase 5: Accuracy</h3>
-            <em>The calculated errors from your created model: </em>
-            <br />
-            <button @click="getCalculation">Get Model Accuracy</button>
-            <div v-if="showAccuracy">
-                <div v-for="(value, index) in showAccuracy" v-bind:key="index">
-                    {{index}} {{value}}
-                </div>
-            </div>
-            <br />
-            <button @click="getTrainErrors">Get Errors on Train Data</button>
-            <div v-if="showTrainErrors">
-                <div v-for="(value, index) in showTrainErrors" v-bind:key="index">
-                    {{index}} {{value}}
-                </div>
-            </div>
-            <br />
-            <button @click="getTestErrors">Get Errors on Test Data</button>
-            <div v-if="showTestErrors">
-                <div v-for="(value, index) in showTestErrors" v-bind:key="index">
-                    {{index}} {{value}}
-                </div>
-            </div>
-            <br />
-            
         </div>
+
+        <h3 align=left>Phase 4: Model training</h3>
+        <em>The prediction chart from your dataset: </em>
+        <button @click="getPredict" v-if="trainTestResource =='' ">Get Prediction</button>
+        <br />
+        <img :src="`data:image/png;base64,${trainTestResource}`" v-if="trainTestResource !=='' " />
+
+        <h3 align=left>Phase 5: Accuracy</h3>
+        <em>The calculated errors from your created model: </em>
+        <br />
+        <button @click="getCalculation">Get Model Accuracy</button>
+        <div v-if="showAccuracy">
+            <div v-for="(value, index) in showAccuracy" v-bind:key="index">
+                {{index}} {{value}}
+            </div>
+        </div>
+        <br />
+        <button @click="getTrainErrors">Get Errors on Train Data</button>
+        <div v-if="showTrainErrors">
+            <div v-for="(value, index) in showTrainErrors" v-bind:key="index">
+                {{index}} {{value}}
+            </div>
+        </div>
+        <br />
+        <button @click="getTestErrors">Get Errors on Test Data</button>
+        <div v-if="showTestErrors">
+            <div v-for="(value, index) in showTestErrors" v-bind:key="index">
+                {{index}} {{value}}
+            </div>
+        </div>
+        <br />
     </div>
 </template>
 
@@ -137,6 +145,10 @@
                 } catch (e) {
                     console.log(e)
                 }
+            },
+            getNumber() {
+                alert("Number of rows get!")
+                console.log(this.number);
             },
             async getPreview(){
                 try{
@@ -215,10 +227,10 @@
         data() {
             return {
                 file: "",
+                numRows: 0,
                 showPreview: false,
                 features: {},
                 featuresValue: false,
-                showLaterSteps: false,
                 rmMissingValuesResult: null,
                 shapes: {},
                 shapesValue: false,

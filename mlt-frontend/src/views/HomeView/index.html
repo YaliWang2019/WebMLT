@@ -1,5 +1,5 @@
 <div>
-    <h1 align ="center">GUI-based Machine Learning Testbed</h1>
+    <h1 align ="center">Machine-Learning Models Testbed</h1>
     <div class="wrapper">
 
         <!--HEADER-->
@@ -10,49 +10,105 @@
         <!--END OF PROMO-->
         <!-- MAIN CONTAINER -->
         <section class="main-container">
-          <h1 id="regression">Regression Type</h1>
-          <p>Regression is a statistical technique used to model the relationship between a dependent variable 
-            (also known as the response variable or outcome variable) and one or more independent variables 
-            (also known as predictor variables or features). The goal of regression analysis is to find the 
-            best-fitting mathematical model that can predict the dependent variable's value based on the independent variables' values.
-            Regression models are used to study the relationship between variables, make predictions about the 
-            values of the dependent variable, and identify the key factors that influence the dependent variable.</p>
-          <div class="box">
-            <router-link to="/linear_regression"><img src="./images/linear_regression.png" alt="Linear Regression Link"></router-link>
-            <router-link to="/polynomial_regression"><img src="./images/polynomial_regression.png" alt="Polynomial Regression Link"></router-link>
-          </div>
+          <h1 id="linearRegression">Linear Regression Model</h1>
+          <table style="width: 70%">
+            <tbody>
+                <tr>
+                    <td style="width: 40%; vertical-align: top">
+                      <p style="width: 80%;">Linear regression is a statistical method used to model the relationship between a dependent variable and one 
+                      or more independent variables. It assumes a linear relationship between the variables and finds the best-fit line that minimizes 
+                      the difference between the predicted and actual values of the dependent variable. The model can be used for both prediction and 
+                      understanding the relationship between variables.</p>
+                      <p>Click the picture on the right to start using the model.</p>
+                    </td>
+                    <td style="width: 20%"><router-link to="/linear_regression" target = "_blank"><img src="./images/linear_regression.png" alt="Linear Regression Link"></router-link></td>
+                </tr>
+            </tbody>
+        </table>
 
-          <!--<div class="location" id="home">-->
-          <h1 id="categorical">Categorical Type</h1>
-          <p>Categorical models are a type of statistical models used to analyze and predict categorical data, 
-            which are data that can be divided into discrete categories or groups. The goal of categorical modeling 
-            is to identify the relationships between the categorical dependent variable (also known as the response variable) 
-            and one or more categorical or continuous independent variables (also known as predictor variables or features).</p>
-          <div class="box">
-            <router-link to="/logistic_regression"><img src="./images/logistic_regression.png" alt="Logistic Regression Link"></router-link>
-          </div>
+          <h1 id="logisticRegression">Logistic Regression Model</h1>
+          <table style="width: 70%">
+            <tbody>
+                <tr>
+                  <td style="width: 40%; vertical-align: top">
+                    <p style="width: 80%;">Logistic regression is a statistical method used to model the relationship between a binary dependent variable 
+                    and one or more independent variables. It uses a logistic function to estimate the probability of the dependent variable taking 
+                    a particular value. The model can be used for both prediction and understanding the relationship between variables. It is widely 
+                    used in many fields such as medicine, finance, and marketing.</p>
+                    <p>Click the picture on the right to start using the model.</p>
+                  </td>
+                  <td style="width: 20%"><router-link to="/logistic_regression" target = "_blank"><img src="./images/logistic_regression.png" alt="Logistic Regression Link"></router-link></td>
+                </tr>
+              </tbody>
+          </table>
 
-          <h1 id="unsupervised">Unsupervised Type</h1>
-          <p>Unsupervised models are a type of machine learning model used to analyze and find patterns in unlabeled data, 
-            meaning data without any predefined labels or categories. Unlike supervised learning models, unsupervised models 
-            do not have a target variable to predict. Instead, try to identify patterns or structures in the data based 
-            on the inherent relationships between the variables.</p>
-          <p>There are various types of unsupervised models, including clustering algorithms, dimensionality reduction algorithms, 
-            and anomaly detection algorithms. Clustering algorithms group similar data points into clusters based on their similarity. 
-            Dimensionality reduction algorithms reduce the number of variables in the data while retaining the most important information, 
-            and anomaly detection algorithms identify data points significantly different from the rest of the data.</p>
-          <div class="box">
-            <router-link to="/k_means_clustering"><img src="./images/k_means_clustering.png" alt="K-Means Clustering Model"></router-link>
-          </div>
+          <h1 id="polynomialRegression">Polynomial Regression Model</h1>
+          <table style="width: 70%">
+            <tbody>
+              <tr>
+                  <td style="width: 40%; vertical-align: top">
+                    <p style="width: 80%;">Polynomial regression is a type of regression analysis that models the relationship between a dependent 
+                      variable and one or more independent variables using a polynomial function. Unlike linear regression, which assumes a linear 
+                      relationship, polynomial regression can capture nonlinear relationships between the variables. The degree of the polynomial 
+                      can be adjusted to fit the data better, but higher degrees can lead to overfitting.</p>
+                      <p>Click the picture on the right to start using the model.</p>
+                  </td>
+                  <td style="width: 20%"><router-link to="/polynomial_regression" target = "_blank"><img src="./images/polynomial_regression.png" alt="Polynomial Regression Link"></router-link></td>
+                </tr>
+              </tbody>
+          </table>
 
-          <h1 id="supervised">Supervised Type (SVM: can be used for both regression and classification)</h1>
-          <div class="box">
-            <router-link to="/svm"><img src="./images/svm.png" alt="SVM Model"></router-link>
-          </div>
+          <h1 id="kMeansClustering">K-Means Clustering Model</h1>
+          <table style="width: 70%">
+            <tbody>
+              <tr>
+                <td style="width: 40%; vertical-align: top">
+                  <p style="width: 80%;">K-means clustering is a unsupervised machine learning algorithm used to group data points into K clusters 
+                    based on their similarity. It begins by randomly selecting K centroids and assigns each data point to the nearest centroid. 
+                    It then updates the centroids based on the mean of the data points in each cluster and repeats the process until convergence. 
+                    The algorithm aims to minimize the distance between the data points and their assigned centroids.</p>
+                    <p>Click the picture on the right to start using the model.</p>
+                </td>
+                <td style="width: 20%"><router-link to="/k_means_clustering" target = "_blank"><img src="./images/k_means_clustering.png" alt="K-Means Clustering Model"></router-link></td>
+              </tr>
+            </tbody>
+          </table>
 
-          <h1 id="supervised">Neural Network (can be used for both regression and classification) </h1>
+          <h1 id="svm">SVM Model</h1>
+          <table style="width: 70%">
+            <tbody>
+              <tr>
+                <td style="width: 40%; vertical-align: top">
+                  <p style="width: 80%;">Support Vector Machine (SVM) is a supervised machine learning algorithm used for classification and regression 
+                    analysis. It works by finding a hyperplane that maximizes the margin between two classes of data. SVM is effective for 
+                    high-dimensional datasets and can handle both linear and nonlinear relationships between the variables using kernel functions. 
+                    It aims to find the optimal boundary that separates the data points into different classes with the largest margin possible.</p>
+                    <p>Click the picture on the right to start using the model.</p>
+                </td>
+                <td style="width: 20%"><router-link to="/svm" target = "_blank"><img src="./images/svm.png" alt="SVM Model"></router-link></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h1 id="neuralNetwork">Neural Network Model</h1>
+          <table style="width: 70%">
+            <tbody>
+              <tr>
+                <td style="width: 40%; vertical-align: top">
+                  <p style="width: 80%;">Neural network is a type of machine learning model inspired by the structure and function of the human brain. 
+                    It consists of multiple layers of interconnected nodes or neurons that process and transmit information. Each neuron applies a 
+                    mathematical function to the input data and sends a signal to the next layer. The model is trained using backpropagation, 
+                    where the error is propagated backwards through the layers to adjust the weights and biases. Neural networks are capable of 
+                    handling complex patterns and can be used for tasks such as image recognition, natural language processing, and prediction.</p>
+                    <p>Click the picture on the right to start using the model.</p>
+                </td>
+                <td style="width: 20%"><router-link to="/neural_network" target = "_blank"><img src="./images/neural_network.png" alt="Neural Network Model"></router-link></td>
+              </tr>
+            </tbody>
+          </table>
+          
           <div class="box">
-            <router-link to="/neural_network"><img src="./images/neural_network.png" alt="Neural Network Model"></router-link>
+            
           </div>
         </section>
         <!-- END OF MAIN CONTAINER -->
