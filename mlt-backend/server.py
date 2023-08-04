@@ -7,6 +7,7 @@ from neural_network import *
 
 from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 app.debug = True
@@ -24,9 +25,28 @@ def lr_removeMissingValues(id):
     rmResult = lr_rmMissingvalues(id)
     return make_response(rmResult)
 
+@app.route('/datasets/<id>/linear_regression/get_columns',methods=['POST'])
+def lr_post_columns(id):
+    # Parse the request data as JSON
+    request_data = json.loads(request.data)
+
+    # Call the lr_getColumns function
+    (X, Y_scaled) = lr_getColumns(id, request_data)
+
+    # Convert the NumPy arrays to lists and return the JSON response
+    return jsonify({'data': (X.tolist(), Y_scaled.tolist())})
+
 @app.route('/datasets/<id>/linear_regression/scatter',methods=['GET'])
 def lr_make_scatter(id):
-    scatterChart = lr_scatterImg(id, request.args.get('x_index'), request.args.get('y_index'), request.args.get('scaleMode'))
+    x_index = request.args.get('x_index')
+    y_index = request.args.get('y_index')
+    scaleMode = request.args.get('scaleMode')
+    data = {
+        'x_index': x_index,
+        'y_index': y_index,
+        'scaleMode': scaleMode
+    }
+    scatterChart = lr_scatterImg(id, data)
     return make_response(scatterChart)
 
 @app.route('/datasets/<id>/linear_regression/train_test_datasets', methods = ['GET'])
