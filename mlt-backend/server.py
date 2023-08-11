@@ -41,27 +41,31 @@ def lr_make_scatter(id):
     x_index = request.args.get('x_index')
     y_index = request.args.get('y_index')
     scaleMode = request.args.get('scaleMode')
-    data = {
-        'x_index': x_index,
-        'y_index': y_index,
-        'scaleMode': scaleMode
-    }
-    scatterChart = lr_scatterImg(id, data)
+    #data = {
+    #    'x_index': x_index,
+    #    'y_index': y_index,
+    #    'scaleMode': scaleMode
+    #}
+    scatterChart = lr_scatterImg(id, x_index, y_index, scaleMode)
     return make_response(scatterChart)
 
 @app.route('/datasets/<id>/linear_regression/train_test_datasets', methods = ['GET'])
-def lr_trainTest_imgs(id):
-    charts = lr_train_test_imgs(id, request.args.get('test_size'), request.args.get('random_state'))
+def lr_trainTest_imgs(id, data):
+    test_size = request.args.get('test_size')
+    random_state = request.args.get('random_state')
+    
+    print(id, data, test_size, random_state)
+    charts = lr_train_test_imgs(id, data, test_size, random_state)
     return make_response(charts)
 
-@app.route('/datasets/<id>/linear_regression/model_training_result', methods = ['GET'])
-def lr_prediction(id):
-    pre_chart = lr_modelTraining(id, request.args.get('test_size'), request.args.get('random_state'))
+@app.route('/datasets/<id>/<data>/linear_regression/model_training_result', methods = ['GET'])
+def lr_prediction(id, data):
+    pre_chart = lr_modelTraining(id, data, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(pre_chart)
 
-@app.route('/datasets/<id>/linear_regression/calculation', methods = ['GET'])
-def lr_calculations(id):
-    results = lr_accuracy(id, request.args.get('test_size'), request.args.get('random_state'))
+@app.route('/datasets/<id>/<data>/linear_regression/calculation', methods = ['GET'])
+def lr_calculations(id, data):
+    results = lr_accuracy(id, data, request.args.get('test_size'), request.args.get('random_state'))
     return make_response(results)
 
 #---------------------------------------------------------------------#

@@ -35,17 +35,19 @@ def lr_rmMissingvalues(id):
   return ((df_new.to_json()), 200)
 
 # Phase 3: data visualization (whole data visualization, training data visualization, and testing data visualization, return charts)
-
-  
-def lr_getColumns(id, data):
+def lr_getParas(id, data):
   df = csv_file[id]
   df_new = df.dropna()
   x_column = df_new[data['x_index']]
   y_column = df_new[data['y_index']]
+  scaleMode = str(data['scaleMode'])
+  return (x_column, y_column, scaleMode)
+
+def lr_getColumns(id, data):
+  (x_column, y_column, scaleMode) = lr_getParas(id, data)
   X = x_column.to_numpy()
   Y = y_column.to_numpy()
-  scaleMode = str(data['scaleMode'])
-
+  
   if "standardization" in scaleMode.lower():
     # standardization
     Y_scaled = (Y - np.mean(Y)) / np.std(Y)
@@ -69,11 +71,22 @@ def lr_scatterImg(id, data):
 
   # Split the Dataset into Training and Test Set
 def lr_spliting(id, data, test_size, random_state): 
-  (X, Y_scaled) = lr_getColumns(id, data) 
+  (x_column, y_column, scaleMode) = lr_getParas(id, data)
+  X = x_column.to_numpy()
+  Y = y_column.to_numpy()
+  
+  if "standardization" in scaleMode.lower():
+    # standardization
+    Y_scaled = (Y - np.mean(Y)) / np.std(Y)
+      
+  elif "normalization" in scaleMode.lower():
+    # normalization
+    Y_scaled = (Y - np.min(Y)) / (np.max(Y) - np.min(Y))
   X_train_split, X_test_split, Y_train, Y_test = train_test_split(X, Y_scaled, test_size = test_size, random_state = random_state)
   return (X_train_split, X_test_split, Y_train, Y_test)
 
 def lr_train_test_imgs(id, data, test_size, random_state):
+  print("test return")
   (X_train, X_test, Y_train, Y_test) = lr_spliting(id, data, test_size = float(test_size), random_state = int(random_state))
   X_train = np.array(X_train)
   Y_train = np.array(Y_train)
@@ -94,8 +107,9 @@ def lr_train_test_imgs(id, data, test_size, random_state):
   plt.ylabel('Y_test')
   plt.tight_layout()
   trainTestImg = lr_img_to_base64(plt)
+  
 
-  return (json.dumps({'trainTestImg': trainTestImg}), 200)
+  #return (json.dumps({'trainTestImg': trainTestImg}), 200)
 
 # Phase 4: model training
 # proving X_train, X_test, regressor, and Y_pred

@@ -229,18 +229,18 @@
                     console.log(e);
                 }
             },
-            async dataPreprocess(){
-                let params2 = {};
-                if (this.test_size && this.test_size != "") {
-                    params2.test_size = parseInt(this.test_size) * 0.01;
+            async dataPreprocess(event){
+                let params={}
+                if(event.target[0].value && event.target[0].value != ""){
+                    params.test_size=parseInt(event.target[0].value)*0.01
                 }
-                if (this.random_state && this.random_state != "") {
-                    params2.random_state = parseInt(this.random_state);
+                if(event.target[1].value && event.target[1].value != ""){
+                    params.random_state=parseInt(event.target[1].value)
                 }
                 try {
-                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/linear_regression/train_test_datasets`, { params: params2 });
+                    const res = await axios.get(`http://localhost:5001/datasets/${localStorage.getItem("id")}/linear_regression/train_test_datasets`, {params});
                     console.log(res.data);
-                    this.trainTestResource = res.data.trainTestImg;
+                    event.trainTestResource = res.data.trainTestImg;
                 } catch (e) {
                     console.log(e);
                 }
